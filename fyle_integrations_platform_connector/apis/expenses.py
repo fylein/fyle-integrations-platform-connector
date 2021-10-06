@@ -13,19 +13,25 @@ class Expenses(Base):
         'PERSONAL_CORPORATE_CREDIT_CARD_ACCOUNT': 'CCC'
     }
 
-    def get(self, query_params: dict=None, filter_negative_expenses: bool=False) -> List[dict]:
+    def get(self, fund_source: List[str], import_state: str, last_synced_at: datetime=None,
+        filter_negative_expenses: bool=False) -> List[dict]:
         """
         Get expenses.
 
         Args:
-            query_params (dict): Query parameters.
-            filter_negative_expenses (bool): Filter negative expenses.
-
+            fund_source (List[str]): Fund source.
+            import_state (str): Import state.
+            last_synced_at (datetime, optional): Last synced at. Defaults to None.
+            filter_negative_expenses (bool, optional): Filter negative expenses. Defaults to False.
+        
         Returns:
             List[dict]: Response.
         """
         all_expenses = []
+
+        query_params = self.__construct_expenses_query_params(fund_source, import_state, last_synced_at)
         generator = self.connection.list_all(query_params)
+
         for expense_list in generator:
             if filter_negative_expenses:
                 expenses = self.__filter_credit_expenses(expense_list)
@@ -34,6 +40,37 @@ class Expenses(Base):
             all_expenses.extend(expenses)
 
         return self.__construct_expenses_objects(all_expenses)
+
+
+    @staticmethod
+    def __construct_expenses_query_params(fund_source: List[str], import_state: str, updated_at: datetime) -> dict:
+        import_state = [import_state]
+        if import_state[0] == 'PAYMENT_PROCESSING' and updated_at is not None:
+            import_state.append('PAID')
+            import_state = 'in.{}'.format(tuple(import_state)).replace("'", '"')
+        else:
+            import_state = 'eq.{}'.format(import_state[0])
+
+        source_account_type = ['PERSONAL_CASH_ACCOUNT']
+        if len(fund_source) == 1:
+            source_account_type = 'eq.{}'.format(source_account_type[0])
+        elif len(fund_source) > 1 and 'CCC' in fund_source:
+            source_account_type.append('PERSONAL_CORPORATE_CREDIT_CARD_ACCOUNT')
+            source_account_type = 'in.{}'.format(tuple(source_account_type)).replace("'", '"')
+
+        if updated_at:
+            updated_at = 'gte.{}'.format(datetime.strftime(updated_at, '%Y-%m-%dT%H:%M:%S.000Z'))
+
+        query_params = {
+            'order': 'updated_at.desc',
+            'source_account->type': source_account_type,
+            'state': import_state
+        }
+
+        if updated_at:
+            query_params['updated_at'] = updated_at
+
+        return query_params
 
 
     @staticmethod
@@ -65,10 +102,11 @@ class Expenses(Base):
         for expense in expenses:
             custom_properties = {}
 
-            for custom_field in custom_fields:
+            for custom_field in expense['custom_fields']:
                 custom_properties[custom_field['name']] = custom_field['value']
 
             objects.append({
+                'id': expense['id'],
                 # 'employee_email': expense['employee']['user']['email'], # TODO: platform blocker
                 'category': expense['category']['name'],
                 'sub_category': expense['category']['sub_category'],
