@@ -60,11 +60,16 @@ class Expenses(Base):
         Returns:
             list: Expenses.
         """
-        # TODO: fix payload
         objects = []
+
         for expense in expenses:
+            custom_properties = {}
+
+            for custom_field in custom_fields:
+                custom_properties[custom_field['name']] = custom_field['value']
+
             objects.append({
-                # 'employee_email': expense['employee']['user']['email'],
+                # 'employee_email': expense['employee']['user']['email'], # TODO: platform blocker
                 'category': expense['category']['name'],
                 'sub_category': expense['category']['sub_category'],
                 'project': expense['project']['name'] if expense['project'] else None,
@@ -89,7 +94,7 @@ class Expenses(Base):
                 'expense_updated_at': expense['updated_at'],
                 'fund_source': Expenses.SOURCE_ACCOUNT_MAP[expense['source_account']['type']],
                 'verified_at': self.__format_date(expense['last_verified_at']),
-                # 'custom_properties': expense_custom_properties if expense_custom_properties else {}
+                'custom_properties': custom_properties
             })
 
         return objects
