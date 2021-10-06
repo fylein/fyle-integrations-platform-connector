@@ -1,8 +1,7 @@
 from datetime import datetime
 from typing import List
 
-# TODO: Add this import
-# from fyle_accounting_mappings.models import ExpenseAttribute
+from fyle_accounting_mappings.models import ExpenseAttribute
 
 
 class Base:
@@ -30,14 +29,11 @@ class Base:
         return 'gte.{}'.format(datetime.strftime(last_synced_at, '%Y-%m-%dT%H:%M:%S.000Z'))
 
 
-    @staticmethod
-    def __get_last_synced_at() -> datetime:
+    def __get_last_synced_at(self) -> datetime:
         """
         Returns the last time the API was synced.
         """
-        # TODO: Add this
-        # return ExpenseAttribute.get_last_synced_at(self.attribute_type)
-        return None
+        return ExpenseAttribute.get_last_synced_at(self.attribute_type, self.workspace_id)
 
 
     def construct_query_params(self) -> dict:
@@ -48,7 +44,6 @@ class Base:
         last_synced_at = self.__get_last_synced_at()
         updated_at = self.__format_date(last_synced_at) if last_synced_at else None
 
-        # TODO: check is_enabled for all apis
         params = {'order': 'updated_at.desc', 'is_enabled': 'eq.true'}
         if updated_at:
             params['updated_at'] = updated_at
@@ -88,7 +83,7 @@ class Base:
             for row in items:
                 attributes.append({
                     'attribute_type': self.attribute_type,
-                    'display_name': 'Category', # TODO change this, check all apps
+                    'display_name': self.attribute_type.replace('_', ' ').title(),
                     'value': row['name'],
                     'source_id': row['id']
                 })

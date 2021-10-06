@@ -17,7 +17,7 @@ class Categories(Base):
         generator = self.get_all_generator()
         for items in generator:
             category_attributes = []
-            for category in items:
+            for category in items['data']:
                 if category['name'] != category['sub_category']:
                     category['name'] = '{0} / {1}'.format(category['name'], category['sub_category'])
 
@@ -28,4 +28,4 @@ class Categories(Base):
                     'source_id': category['id']
                 })
 
-            self.bulk_create_or_update_expense_attributes(category_attributes, 'CATEGORY', self.workspace_id)
+            self.bulk_create_or_update_expense_attributes(category_attributes)

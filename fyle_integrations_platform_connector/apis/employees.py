@@ -16,7 +16,7 @@ class Employees(Base):
         generator = self.get_all_generator()
         for items in generator:
             employee_attributes = []
-            for employee in items:
+            for employee in items['data']:
                 employee_attributes.append({
                     'attribute_type': 'EMPLOYEE',
                     'display_name': 'Employee',
@@ -26,9 +26,9 @@ class Employees(Base):
                         'employee_code': employee['code'],
                         'full_name': employee['user']['full_name'],
                         'location': employee['location'],
-                        'department': employee['department'], # TODO: check this
+                        'department': employee['department']['name'] if employee['department'] else None,
                         'department_id': employee['department_id'],
-                        'department_code': employee['department']['code']
+                        'department_code': employee['department']['code'] if employee['department'] else None
                     }
                 })
 
