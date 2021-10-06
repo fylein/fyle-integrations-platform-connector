@@ -1,7 +1,8 @@
 from datetime import datetime
 from typing import List
 
-from fyle_accounting_mappings.models import ExpenseAttribute
+# TODO: figure out a way for local dev
+# from fyle_accounting_mappings.models import ExpenseAttribute
 
 
 class Base:

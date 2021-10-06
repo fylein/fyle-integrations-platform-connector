@@ -1,10 +1,17 @@
 from typing import List
+from datetime import datetime
+
+from dateutil import parser
 
 from .base import Base
 
 
 class Expenses(Base):
     """Class for Expenses APIs."""
+    SOURCE_ACCOUNT_MAP = {
+        'PERSONAL_CASH_ACCOUNT': 'PERSONAL',
+        'PERSONAL_CORPORATE_CREDIT_CARD_ACCOUNT': 'CCC'
+    }
 
     def get(self, query_params: dict=None, filter_negative_expenses: bool=False) -> List[dict]:
         """
@@ -42,9 +49,8 @@ class Expenses(Base):
         """
         return list(filter(lambda expense: expense['amount'] > 0, expense_list['data']))
 
-    
-    @staticmethod
-    def __construct_expenses_objects(expenses: List[dict]) -> List[dict]:
+
+    def __construct_expenses_objects(self, expenses: List[dict]) -> List[dict]:
         """
         Construct expenses objects.
 
@@ -54,7 +60,7 @@ class Expenses(Base):
         Returns:
             list: Expenses.
         """
-        # TODO: implement
+        # TODO: fix payload
         objects = []
         for expense in expenses:
             objects.append({
@@ -77,13 +83,30 @@ class Expenses(Base):
                 'purpose': expense['purpose'],
                 'report_id': expense['report_id'],
                 'file_ids': expense['file_ids'],
-                # 'spent_at': _format_date(expense['spent_at']),
-                # 'approved_at': _format_date(expense['report']['last_approved_at']) if expense['report'] else None,
-                # 'expense_created_at': expense['created_at'],
-                # 'expense_updated_at': expense['updated_at'],
-                # 'fund_source': SOURCE_ACCOUNT_MAP[expense['source_account']['type']],
-                # 'verified_at': _format_date(expense['last_verified_at']),
+                'spent_at': self.__format_date(expense['spent_at']),
+                'approved_at': self.__format_date(expense['report']['last_approved_at']) if expense['report'] else None,
+                'expense_created_at': expense['created_at'],
+                'expense_updated_at': expense['updated_at'],
+                'fund_source': Expenses.SOURCE_ACCOUNT_MAP[expense['source_account']['type']],
+                'verified_at': self.__format_date(expense['last_verified_at']),
                 # 'custom_properties': expense_custom_properties if expense_custom_properties else {}
             })
 
         return objects
+
+
+    @staticmethod
+    def __format_date(date_string) -> datetime:
+        """
+        Format date.
+
+        Args:
+            date_string (str): Date string.
+
+        Returns:
+            dateime: Formatted date.
+        """
+        if date_string:
+            date_string = parser.parse(date_string)
+
+        return date_string

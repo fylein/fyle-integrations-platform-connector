@@ -1,0 +1,3 @@
+python-dateutil==2.8.1
+fyle
+fyle_accounting_mappings
