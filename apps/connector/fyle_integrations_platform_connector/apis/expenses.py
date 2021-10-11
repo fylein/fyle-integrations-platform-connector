@@ -107,7 +107,7 @@ class Expenses(Base):
 
             objects.append({
                 'id': expense['id'],
-                # 'employee_email': expense['employee']['user']['email'], # TODO: platform blocker
+                'employee_email': expense['employee']['user']['email'],
                 'category': expense['category']['name'],
                 'sub_category': expense['category']['sub_category'],
                 'project': expense['project']['name'] if expense['project'] else None,
