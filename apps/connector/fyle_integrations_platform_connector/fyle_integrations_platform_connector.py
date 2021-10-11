@@ -8,7 +8,8 @@ logger.level = logging.INFO
 
 
 class PlatformConnector:
-    """The main class creates a connection with Fyle Platform APIs using OAuth2 authentication (refresh token grant type).
+    """The main class creates a connection with Fyle Platform APIs using OAuth2 authentication 
+    (refresh token grant type).
 
     Parameters:
     cluster_domain (str): Fyle Platform cluster domain.

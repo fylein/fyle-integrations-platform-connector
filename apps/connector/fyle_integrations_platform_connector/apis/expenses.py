@@ -23,7 +23,7 @@ class Expenses(Base):
             import_state (str): Import state.
             last_synced_at (datetime, optional): Last synced at. Defaults to None.
             filter_negative_expenses (bool, optional): Filter negative expenses. Defaults to False.
-        
+
         Returns:
             List[dict]: Response.
         """

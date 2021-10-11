@@ -1,5 +1,3 @@
-from typing import List
-
 from .base import Base
 
 
@@ -33,4 +31,3 @@ class Employees(Base):
                 })
 
             self.bulk_create_or_update_expense_attributes(employee_attributes, True)
-
