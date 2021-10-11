@@ -30,7 +30,7 @@ class Base:
         return 'gte.{}'.format(datetime.strftime(last_synced_at, '%Y-%m-%dT%H:%M:%S.000Z'))
 
 
-    def __get_last_synced_at(self) -> datetime:
+    def __get_last_synced_at(self):
         """
         Returns the last time the API was synced.
         """
@@ -42,8 +42,8 @@ class Base:
         Constructs the query params for the API call.
         :return: dict
         """
-        last_synced_at = self.__get_last_synced_at()
-        updated_at = self.__format_date(last_synced_at) if last_synced_at else None
+        last_synced_record = self.__get_last_synced_at()
+        updated_at = self.__format_date(last_synced_record.updated_at) if last_synced_record else None
 
         params = {'order': 'updated_at.desc', 'is_enabled': 'eq.true'}
         if updated_at:
@@ -80,7 +80,6 @@ class Base:
         """
         attributes = []
         for items in generator:
-            attributes = []
             for row in items:
                 attributes.append({
                     'attribute_type': self.attribute_type,

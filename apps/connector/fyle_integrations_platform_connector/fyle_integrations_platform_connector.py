@@ -1,6 +1,10 @@
+import logging
 from fyle.platform import Platform
 
-from .apis import Expenses, Employees, Categories
+from .apis import Expenses, Employees, Categories, Projects
+
+logger = logging.getLogger(__name__)
+logger.level = logging.INFO
 
 
 class PlatformConnector:
@@ -31,6 +35,7 @@ class PlatformConnector:
         self.expenses = Expenses()
         self.employees = Employees()
         self.categories = Categories()
+        self.projects = Projects()
 
         self.set_connection()
         self.set_workspace_id()
@@ -41,6 +46,7 @@ class PlatformConnector:
         self.expenses.set_connection(self.connection.v1.admin.expenses)
         self.employees.set_connection(self.connection.v1.admin.employees)
         self.categories.set_connection(self.connection.v1.admin.categories)
+        self.projects.set_connection(self.connection.v1.admin.projects)
 
 
     def set_workspace_id(self):
@@ -48,12 +54,16 @@ class PlatformConnector:
         self.expenses.set_workspace_id(self.workspace_id)
         self.employees.set_workspace_id(self.workspace_id)
         self.categories.set_workspace_id(self.workspace_id)
+        self.projects.set_workspace_id(self.workspace_id)
 
 
     def import_fyle_dimension(self):
         """Import Fyle Platform dimension."""
-        apis = ['employees', 'categories']
+        apis = ['employees', 'categories', 'projects']
 
         for api in apis:
             dimension = getattr(self, api)
-            dimension.sync()
+            try:
+                dimension.sync()
+            except Exception as e:
+                logger.exception(e)
