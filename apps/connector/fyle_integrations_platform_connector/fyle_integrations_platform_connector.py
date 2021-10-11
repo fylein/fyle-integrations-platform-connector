@@ -52,7 +52,7 @@ class PlatformConnector:
 
     def import_fyle_dimension(self):
         """Import Fyle Platform dimension."""
-        apis = ['Employees, Categories']
+        apis = ['employees', 'categories']
 
         for api in apis:
             dimension = getattr(self, api)

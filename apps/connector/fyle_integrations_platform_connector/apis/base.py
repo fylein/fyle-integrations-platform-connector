@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import List
 
 # TODO: figure out a way for local dev
-# from fyle_accounting_mappings.models import ExpenseAttribute
+from fyle_accounting_mappings.models import ExpenseAttribute
 
 
 class Base:
