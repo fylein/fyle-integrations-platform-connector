@@ -3,7 +3,7 @@ from fyle.platform import Platform
 from .apis import Expenses, Employees, Categories
 
 
-class FyleIntegrationsPlatformConnector:
+class PlatformConnector:
     """The main class creates a connection with Fyle Platform APIs using OAuth2 authentication (refresh token grant type).
 
     Parameters:

@@ -132,3 +132,4 @@ dmypy.json
 fyle/
 dry_run.py
 structure.yml
+fyle_accounting_mappings/
