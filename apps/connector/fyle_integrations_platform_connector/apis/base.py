@@ -79,7 +79,7 @@ class Base:
         """
         attributes = []
         for items in generator:
-            for row in items:
+            for row in items['data']:
                 attributes.append({
                     'attribute_type': self.attribute_type,
                     'display_name': self.attribute_type.replace('_', ' ').title(),
