@@ -5,14 +5,14 @@ class Categories(Base):
     """Class for Categories APIs."""
 
     def __init__(self):
-        Base.__init__(self, attribute_type='CATEGORY')
+        Base.__init__(self, attribute_type='CATEGORY', query_params={'is_enabled': 'eq.true'})
 
 
     def sync(self):
         """
         Syncs the latest API data to DB.
         """
-        generator = self.get_all_generator(query_params={'is_enabled': 'eq.true'})
+        generator = self.get_all_generator()
         for items in generator:
             category_attributes = []
             for category in items['data']:

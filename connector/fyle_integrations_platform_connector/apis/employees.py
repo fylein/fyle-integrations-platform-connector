@@ -5,13 +5,13 @@ class Employees(Base):
     """Class for Employees APIs."""
 
     def __init__(self):
-        Base.__init__(self, attribute_type='EMPLOYEE')
+        Base.__init__(self, attribute_type='EMPLOYEE', query_params={'is_enabled': 'eq.true'})
 
     def sync(self):
         """
         Syncs the latest API data to DB.
         """
-        generator = self.get_all_generator(query_params={'is_enabled': 'eq.true'})
+        generator = self.get_all_generator()
         for items in generator:
             employee_attributes = []
             for employee in items['data']:

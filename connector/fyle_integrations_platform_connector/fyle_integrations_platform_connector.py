@@ -71,6 +71,6 @@ class PlatformConnector:
         for api in apis:
             dimension = getattr(self, api)
             try:
-                dimension.sync(query_params={'is_enabled': 'eq.true'})
+                dimension.sync()
             except Exception as e:
                 logger.exception(e)

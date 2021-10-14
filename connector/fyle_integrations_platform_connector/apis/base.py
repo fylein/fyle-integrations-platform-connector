@@ -7,8 +7,9 @@ from fyle_accounting_mappings.models import ExpenseAttribute
 class Base:
     """The base class for all API classes."""
 
-    def __init__(self, attribute_type: str = None):
+    def __init__(self, attribute_type: str = None, query_params: dict = {}):
         self.attribute_type = attribute_type
+        self.query_params = query_params
         self.connection = None
         self.workspace_id = None
 
@@ -36,17 +37,16 @@ class Base:
         return ExpenseAttribute.get_last_synced_at(self.attribute_type, self.workspace_id)
 
 
-    def construct_query_params(self, query_params: dict) -> dict:
+    def construct_query_params(self) -> dict:
         """
         Constructs the query params for the API call.
-        :param query_params: Query params.
         :return: dict
         """
         last_synced_record = self.__get_last_synced_at()
         updated_at = self.__format_date(last_synced_record.updated_at) if last_synced_record else None
 
         params = {'order': 'updated_at.desc'}
-        params.update(query_params)
+        params.update(self.query_params)
 
         if updated_at:
             params['updated_at'] = updated_at
@@ -54,13 +54,12 @@ class Base:
         return params
 
 
-    def get_all_generator(self, query_params: dict):
+    def get_all_generator(self):
         """
         Returns the generator for retrieving data from the API.
-        :param query_params: Query params.
         :return: Generator
         """
-        query_params = self.construct_query_params(query_params)
+        query_params = self.construct_query_params()
 
         return self.connection.list_all(query_params)
 
@@ -95,11 +94,10 @@ class Base:
         return attributes
 
 
-    def sync(self, query_params: dict = {}) -> None:
+    def sync(self) -> None:
         """
         Syncs the latest API data to DB.
-        :param query_params: Query params.
         """
-        generator = self.get_all_generator(query_params)
+        generator = self.get_all_generator()
         attributes = self.__construct_expense_attribute_objects(generator)
         self.bulk_create_or_update_expense_attributes(attributes)
