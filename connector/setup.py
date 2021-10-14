@@ -4,7 +4,7 @@ with open('README.md', 'r', encoding='utf-8') as f:
     long_description = f.read()
 
 setuptools.setup(
-    name='fyle_integrations_platform_connector',
+    name='fyle-integrations-platform-connector',
     version='0.1.0',
     author='Shwetabh Kumar',
     author_email='shwetabh.kumar@fyle.in',

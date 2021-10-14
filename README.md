@@ -4,7 +4,7 @@
 
 A common platform connector for all the Fyle Integrations to interact with Fyle's Platform APIs
 
-`pip install fyle_integrations_platform_connector`
+`pip install fyle-integrations-platform-connector`
 
 ##### In Django `settings.py`
 
