@@ -8,18 +8,14 @@ from .base import Base
 
 class Expenses(Base):
     """Class for Expenses APIs."""
-    SOURCE_ACCOUNT_MAP = {
-        'PERSONAL_CASH_ACCOUNT': 'PERSONAL',
-        'PERSONAL_CORPORATE_CREDIT_CARD_ACCOUNT': 'CCC'
-    }
 
-    def get(self, fund_source: List[str], import_state: str, last_synced_at: datetime=None,
+    def get(self, source_account_types: List[str], import_state: str, last_synced_at: datetime=None,
         filter_negative_expenses: bool=False) -> List[dict]:
         """
         Get expenses.
 
         Args:
-            fund_source (List[str]): Fund source.
+            source_account_types (List[str]): Source account types.
             import_state (str): Import state.
             last_synced_at (datetime, optional): Last synced at. Defaults to None.
             filter_negative_expenses (bool, optional): Filter negative expenses. Defaults to False.
@@ -29,7 +25,7 @@ class Expenses(Base):
         """
         all_expenses = []
 
-        query_params = self.__construct_expenses_query_params(fund_source, import_state, last_synced_at)
+        query_params = self.__construct_expenses_query_params(source_account_types, import_state, last_synced_at)
         generator = self.connection.list_all(query_params)
 
         for expense_list in generator:
@@ -43,7 +39,14 @@ class Expenses(Base):
 
 
     @staticmethod
-    def __construct_expenses_query_params(fund_source: List[str], import_state: str, updated_at: datetime) -> dict:
+    def __construct_expenses_query_params(source_account_types: List[str], import_state: str, updated_at: datetime) -> dict:
+        """
+        Construct expenses query params.
+        :param source_account_types: Source account types.
+        :param import_state: Import state.
+        :param updated_at: Updated at.
+        :return: Query params.
+        """
         import_state = [import_state]
         if import_state[0] == 'PAYMENT_PROCESSING' and updated_at is not None:
             import_state.append('PAID')
@@ -51,10 +54,9 @@ class Expenses(Base):
         else:
             import_state = 'eq.{}'.format(import_state[0])
 
-        source_account_type = ['PERSONAL_CASH_ACCOUNT']
-        if len(fund_source) == 1:
-            source_account_type = 'eq.{}'.format(source_account_type[0])
-        elif len(fund_source) > 1 and 'CCC' in fund_source:
+        if len(source_account_types) == 1:
+            source_account_type = 'eq.{}'.format(source_account_types[0])
+        elif len(source_account_types) > 1 and 'PERSONAL_CORPORATE_CREDIT_CARD_ACCOUNT' in source_account_types:
             source_account_type.append('PERSONAL_CORPORATE_CREDIT_CARD_ACCOUNT')
             source_account_type = 'in.{}'.format(tuple(source_account_type)).replace("'", '"')
 
@@ -130,7 +132,7 @@ class Expenses(Base):
                 'approved_at': self.__format_date(expense['report']['last_approved_at']) if expense['report'] else None,
                 'expense_created_at': expense['created_at'],
                 'expense_updated_at': expense['updated_at'],
-                'fund_source': Expenses.SOURCE_ACCOUNT_MAP[expense['source_account']['type']],
+                'source_account_type': expense['source_account']['type'],
                 'verified_at': self.__format_date(expense['last_verified_at']),
                 'custom_properties': custom_properties
             })
