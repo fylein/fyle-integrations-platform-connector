@@ -54,8 +54,9 @@ class Expenses(Base):
         else:
             import_state = 'eq.{}'.format(import_state[0])
 
+        source_account_type = ['PERSONAL_CASH_ACCOUNT']
         if len(source_account_types) == 1:
-            source_account_type = 'eq.{}'.format(source_account_types[0])
+            source_account_type = 'eq.{}'.format(source_account_type[0])
         elif len(source_account_types) > 1 and 'PERSONAL_CORPORATE_CREDIT_CARD_ACCOUNT' in source_account_types:
             source_account_type.append('PERSONAL_CORPORATE_CREDIT_CARD_ACCOUNT')
             source_account_type = 'in.{}'.format(tuple(source_account_type)).replace("'", '"')
