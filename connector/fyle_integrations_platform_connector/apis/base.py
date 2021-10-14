@@ -36,26 +36,31 @@ class Base:
         return ExpenseAttribute.get_last_synced_at(self.attribute_type, self.workspace_id)
 
 
-    def construct_query_params(self) -> dict:
+    def construct_query_params(self, query_params: dict) -> dict:
         """
         Constructs the query params for the API call.
+        :param query_params: Query params.
         :return: dict
         """
         last_synced_record = self.__get_last_synced_at()
         updated_at = self.__format_date(last_synced_record.updated_at) if last_synced_record else None
 
-        params = {'order': 'updated_at.desc', 'is_enabled': 'eq.true'}
+        params = {'order': 'updated_at.desc'}
+        params.update(query_params)
+
         if updated_at:
             params['updated_at'] = updated_at
 
         return params
 
 
-    def get_all_generator(self):
+    def get_all_generator(self, query_params: dict):
         """
         Returns the generator for retrieving data from the API.
+        :param query_params: Query params.
+        :return: Generator
         """
-        query_params = self.construct_query_params()
+        query_params = self.construct_query_params(query_params)
 
         return self.connection.list_all(query_params)
 
@@ -90,10 +95,11 @@ class Base:
         return attributes
 
 
-    def sync(self) -> None:
+    def sync(self, query_params: dict = {}) -> None:
         """
         Syncs the latest API data to DB.
+        :param query_params: Query params.
         """
-        generator = self.get_all_generator()
+        generator = self.get_all_generator(query_params)
         attributes = self.__construct_expense_attribute_objects(generator)
         self.bulk_create_or_update_expense_attributes(attributes)

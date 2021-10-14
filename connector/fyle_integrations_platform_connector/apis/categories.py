@@ -12,7 +12,7 @@ class Categories(Base):
         """
         Syncs the latest API data to DB.
         """
-        generator = self.get_all_generator()
+        generator = self.get_all_generator(query_params={'is_enabled': 'eq.true'})
         for items in generator:
             category_attributes = []
             for category in items['data']:
