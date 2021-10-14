@@ -40,7 +40,7 @@ INSTALLED_APPS = [
 
     'fyle_accounting_mappings',
     # Created apps
-    'apps.connector',
+    'connector',
     'apps.workspaces'
 ]
 
