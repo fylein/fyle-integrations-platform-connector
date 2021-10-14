@@ -11,7 +11,7 @@ class ExpenseCustomFields(Base):
         """
         Syncs the latest API data to DB.
         """
-        query_params = {'order': 'updated_at.desc', 'is_custom': 'eq.true', 'type': 'eq.SELECT'}
+        query_params = {'order': 'updated_at.desc', 'is_custom': 'eq.true', 'type': 'eq.SELECT', 'is_enabled': 'eq.true'}
         generator = self.connection.list_all(query_params)
 
         for items in generator:
