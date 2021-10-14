@@ -4,9 +4,9 @@
 
 A common platform connector for all the Fyle Integrations to interact with Fyle's Platform APIs
 
-    $ pip install fyle_integrations_platform_connector
+`pip install fyle_integrations_platform_connector`
 
-In Django `settings.py` -
+##### In Django `settings.py`
 
     INSTALLED_APPS = [
         'django.contrib.admin',
@@ -33,7 +33,7 @@ In Django `settings.py` -
     ]
 
 
-Usage - 
+##### Usage
 
 ```
 from fyle_integrations_platform_connector import PlatformConnector as PlatformIntegrationsConnector
@@ -63,7 +63,25 @@ connector.employees.sync()
 connector.projects.sync()
 ```
 
-Run a raw python script - 
+## Local Development
+### Setup
+
+Setup virtual environment and install dependencies -
+`virtualenv venv && pip install -r requirements.txt`
+
+Copy sample secrets file and add secret environment variables -
+`cp sample_secrets.sh secrets.sh`
+
+
+##### Run a raw python script (script.py)
 ```
-python manage.py shell < dry_run.py 
+bash run.sh
+```
+
+##### Bash into DB and check data
+```
+sqlite3 db.sqlite3
+
+-- Example query
+select attribute_type, count(*) from expense_attributes group by attribute_type;
 ```
