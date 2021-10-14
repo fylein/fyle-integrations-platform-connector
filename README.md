@@ -73,7 +73,7 @@ Copy sample secrets file and add secret environment variables -
 `cp sample_secrets.sh secrets.sh`
 
 
-##### Run a raw python script (script.py)
+##### Run a raw python script [(script.py)](https://github.com/fylein/fyle-integrations-platform-connector/blob/master/script.py)
 ```
 bash run.sh
 ```
