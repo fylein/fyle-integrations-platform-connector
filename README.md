@@ -67,10 +67,14 @@ connector.projects.sync()
 ### Setup
 
 Setup virtual environment and install dependencies -
-`virtualenv venv && pip install -r requirements.txt`
+```
+virtualenv venv && source venv/bin/activate && pip install -r requirements.txt
+```
 
 Copy sample secrets file and add secret environment variables -
-`cp sample_secrets.sh secrets.sh`
+```
+cp sample_secrets.sh secrets.sh
+```
 
 
 ##### Run a raw python script [(script.py)](https://github.com/fylein/fyle-integrations-platform-connector/blob/master/script.py)
