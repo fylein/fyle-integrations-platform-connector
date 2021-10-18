@@ -20,8 +20,8 @@ class Categories(Base):
                     category['name'] = '{0} / {1}'.format(category['name'], category['sub_category'])
 
                 category_attributes.append({
-                    'attribute_type': 'CATEGORY',
-                    'display_name': 'Category',
+                    'attribute_type': self.attribute_type,
+                    'display_name': self.attribute_type.replace('_', ' ').title(),
                     'value': category['name'],
                     'source_id': category['id']
                 })

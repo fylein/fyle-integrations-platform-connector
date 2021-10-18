@@ -16,8 +16,8 @@ class Employees(Base):
             employee_attributes = []
             for employee in items['data']:
                 employee_attributes.append({
-                    'attribute_type': 'EMPLOYEE',
-                    'display_name': 'Employee',
+                    'attribute_type': self.attribute_type,
+                    'display_name': self.attribute_type.replace('_', ' ').title(),
                     'value': employee['user']['email'],
                     'source_id': employee['id'],
                     'detail': {

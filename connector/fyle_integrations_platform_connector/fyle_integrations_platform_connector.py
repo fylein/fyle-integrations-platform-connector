@@ -1,7 +1,7 @@
 import logging
 from fyle.platform import Platform
 
-from .apis import Expenses, Employees, Categories, Projects, CostCenters, ExpenseCustomFields
+from .apis import Expenses, Employees, Categories, Projects, CostCenters, ExpenseCustomFields, CorporateCards
 
 logger = logging.getLogger(__name__)
 logger.level = logging.INFO
@@ -39,6 +39,7 @@ class PlatformConnector:
         self.projects = Projects()
         self.cost_centers = CostCenters()
         self.expense_custom_fields = ExpenseCustomFields()
+        self.corporate_cards = CorporateCards()
 
         self.set_connection()
         self.set_workspace_id()
@@ -52,6 +53,7 @@ class PlatformConnector:
         self.projects.set_connection(self.connection.v1.admin.projects)
         self.cost_centers.set_connection(self.connection.v1.admin.cost_centers)
         self.expense_custom_fields.set_connection(self.connection.v1.admin.expense_fields)
+        self.corporate_cards.set_connection(self.connection.v1.admin.corporate_cards)
 
 
     def set_workspace_id(self):
@@ -62,11 +64,12 @@ class PlatformConnector:
         self.projects.set_workspace_id(self.workspace_id)
         self.cost_centers.set_workspace_id(self.workspace_id)
         self.expense_custom_fields.set_workspace_id(self.workspace_id)
+        self.corporate_cards.set_workspace_id(self.workspace_id)
 
 
     def import_fyle_dimension(self):
         """Import Fyle Platform dimension."""
-        apis = ['employees', 'categories', 'projects', 'cost_centers', 'expense_custom_fields']
+        apis = ['employees', 'categories', 'projects', 'cost_centers', 'expense_custom_fields', 'corporate_cards']
 
         for api in apis:
             dimension = getattr(self, api)
