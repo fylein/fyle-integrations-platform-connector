@@ -27,5 +27,5 @@ class ExpenseCustomFields(Base):
                         'source_id': 'expense_custom_field.{}.{}'.format(row['field_name'].lower(), count)
                     })
                     count = count + 1
-            self.attribute_type = attribute_type
-            self.bulk_create_or_update_expense_attributes(attributes)
+                self.attribute_type = attribute_type
+                self.bulk_create_or_update_expense_attributes(attributes)

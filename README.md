@@ -68,7 +68,7 @@ connector.projects.sync()
 
 Setup virtual environment and install dependencies -
 ```
-virtualenv venv && source venv/bin/activate && pip install -r requirements.txt
+python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt
 ```
 
 Copy sample secrets file and add secret environment variables -
