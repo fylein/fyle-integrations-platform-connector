@@ -9,27 +9,27 @@ from .base import Base
 class Expenses(Base):
     """Class for Expenses APIs."""
 
-    def get(self, source_account_types: List[str], import_state: str, last_synced_at: datetime=None,
-        filter_negative_expenses: bool=False) -> List[dict]:
+    def get(self, source_account_type: List[str], state: str, last_synced_at: datetime=None,
+        filter_credit_expenses: bool=False) -> List[dict]:
         """
         Get expenses.
 
         Args:
-            source_account_types (List[str]): Source account types.
-            import_state (str): Import state.
+            source_account_type (List[str]): Source account types.
+            state (str): Import state.
             last_synced_at (datetime, optional): Last synced at. Defaults to None.
-            filter_negative_expenses (bool, optional): Filter negative expenses. Defaults to False.
+            filter_credit_expenses (bool, optional): Filter negative expenses. Defaults to False.
 
         Returns:
             List[dict]: Response.
         """
         all_expenses = []
 
-        query_params = self.__construct_expenses_query_params(source_account_types, import_state, last_synced_at)
+        query_params = self.__construct_expenses_query_params(source_account_type, state, last_synced_at)
         generator = self.connection.list_all(query_params)
 
         for expense_list in generator:
-            if filter_negative_expenses:
+            if filter_credit_expenses:
                 expenses = self.__filter_credit_expenses(expense_list)
             else:
                 expenses = expense_list['data']
@@ -39,35 +39,35 @@ class Expenses(Base):
 
 
     @staticmethod
-    def __construct_expenses_query_params(source_account_types: List[str], import_state: str, updated_at: datetime) -> dict:
+    def __construct_expenses_query_params(source_account_type: List[str], state: str, updated_at: datetime) -> dict:
         """
         Construct expenses query params.
-        :param source_account_types: Source account types.
-        :param import_state: Import state.
+        :param source_account_type: Source account types.
+        :param state: Import state.
         :param updated_at: Updated at.
         :return: Query params.
         """
-        import_state = [import_state]
-        if import_state[0] == 'PAYMENT_PROCESSING' and updated_at is not None:
-            import_state.append('PAID')
-            import_state = 'in.{}'.format(tuple(import_state)).replace("'", '"')
+        state = [state]
+        if state[0] == 'PAYMENT_PROCESSING' and updated_at is not None:
+            state.append('PAID')
+            state = 'in.{}'.format(tuple(state)).replace("'", '"')
         else:
-            import_state = 'eq.{}'.format(import_state[0])
+            state = 'eq.{}'.format(state[0])
 
-        source_account_type = ['PERSONAL_CASH_ACCOUNT']
-        if len(source_account_types) == 1:
-            source_account_type = 'eq.{}'.format(source_account_type[0])
-        elif len(source_account_types) > 1 and 'PERSONAL_CORPORATE_CREDIT_CARD_ACCOUNT' in source_account_types:
-            source_account_type.append('PERSONAL_CORPORATE_CREDIT_CARD_ACCOUNT')
-            source_account_type = 'in.{}'.format(tuple(source_account_type)).replace("'", '"')
+        source_account_type_filter = ['PERSONAL_CASH_ACCOUNT']
+        if len(source_account_type) == 1:
+            source_account_type_filter = 'eq.{}'.format(source_account_type_filter[0])
+        elif len(source_account_type) > 1 and 'PERSONAL_CORPORATE_CREDIT_CARD_ACCOUNT' in source_account_type:
+            source_account_type_filter.append('PERSONAL_CORPORATE_CREDIT_CARD_ACCOUNT')
+            source_account_type_filter = 'in.{}'.format(tuple(source_account_type_filter)).replace("'", '"')
 
         if updated_at:
             updated_at = 'gte.{}'.format(datetime.strftime(updated_at, '%Y-%m-%dT%H:%M:%S.000Z'))
 
         query_params = {
             'order': 'updated_at.desc',
-            'source_account->type': source_account_type,
-            'state': import_state
+            'source_account->type': source_account_type_filter,
+            'state': state
         }
 
         if updated_at:
