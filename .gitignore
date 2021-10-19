@@ -127,3 +127,11 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Dev files
+fyle/
+dry_run.py
+structure.yml
+fyle_accounting_mappings/
+secrets.sh
+script.py
