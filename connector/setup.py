@@ -17,7 +17,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     install_requires=[
         'fyle_accounting_mappings>=1.6.0',
-        'fyle>=v0.14.0'
+        'fyle>=v0.16.0'
     ],
     classifiers=[
         'Topic :: Internet :: WWW/HTTP',
