@@ -126,6 +126,8 @@ class Expenses(Base):
                 'state': expense['state'],
                 'vendor': expense['merchant'],
                 'cost_center': expense['cost_center']['name'] if expense['cost_center'] else None,
+                'corporate_card_id': expense['matched_corporate_card_transactions'][0]['corporate_card_id'] \
+                    if expense['matched_corporate_card_transactions'] else None,
                 'purpose': expense['purpose'],
                 'report_id': expense['report_id'],
                 'file_ids': expense['file_ids'],

@@ -15,13 +15,17 @@ class CorporateCards(Base):
         for items in generator:
             card_attributes = []
             for card in items['data']:
+                value = '{} - {}'.format(
+                    card['card_number'][-6:].replace('*','').replace('x','').replace('X','').replace('-',''),
+                    card['bank_name']
+                )
+
                 card_attributes.append({
                     'attribute_type': self.attribute_type,
                     'display_name': self.attribute_type.replace('_', ' ').title(),
-                    'value': card['card_number'],
+                    'value': value,
                     'source_id': card['id'],
                     'detail': {
-                        'bank_name': card['bank_name'],
                         'cardholder_name': card['cardholder_name']
                     }
                 })
