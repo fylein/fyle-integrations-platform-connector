@@ -28,4 +28,4 @@ class ExpenseCustomFields(Base):
                     })
                     count = count + 1
                 self.attribute_type = attribute_type
-                self.bulk_create_or_update_expense_attributes(attributes)
+                self.bulk_create_or_update_expense_attributes(attributes, True)

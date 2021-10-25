@@ -29,10 +29,10 @@ class Expenses(Base):
         generator = self.connection.list_all(query_params)
 
         for expense_list in generator:
+            expenses = self.__filter_personal_expenses(expense_list)
+
             if filter_credit_expenses:
-                expenses = self.__filter_credit_expenses(expense_list)
-            else:
-                expenses = expense_list['data']
+                expenses = self.__filter_credit_expenses(expenses)
             all_expenses.extend(expenses)
 
         return self.__construct_expenses_objects(all_expenses)
@@ -77,6 +77,23 @@ class Expenses(Base):
 
 
     @staticmethod
+    def __filter_personal_expenses(expense_list: dict) -> List[dict]:
+        """
+        Filter personal expenses.
+        :param expense_list: Expense list.
+        :return: Expense list.
+        """
+        return list(
+            filter(
+                lambda expense: not (
+                    not expense['is_reimbursable'] and expense['source_account']['type'] == 'PERSONAL_CASH_ACCOUNT'
+                ),
+                expense_list['data']
+            )
+        )
+
+
+    @staticmethod
     def __filter_credit_expenses(expense_list: dict) -> List[dict]:
         """
         Filter negative expenses.
@@ -87,7 +104,7 @@ class Expenses(Base):
         Returns:
             list: Expenses.
         """
-        return list(filter(lambda expense: expense['amount'] > 0, expense_list['data']))
+        return list(filter(lambda expense: expense['amount'] > 0, expense_list))
 
 
     def __construct_expenses_objects(self, expenses: List[dict]) -> List[dict]:
@@ -126,6 +143,8 @@ class Expenses(Base):
                 'state': expense['state'],
                 'vendor': expense['merchant'],
                 'cost_center': expense['cost_center']['name'] if expense['cost_center'] else None,
+                'corporate_card_id': expense['matched_corporate_card_transactions'][0]['corporate_card_id'] \
+                    if expense['matched_corporate_card_transactions'] else None,
                 'purpose': expense['purpose'],
                 'report_id': expense['report_id'],
                 'file_ids': expense['file_ids'],
