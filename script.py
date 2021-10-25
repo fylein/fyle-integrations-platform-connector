@@ -15,8 +15,8 @@ connector = PlatformConnector(
 
 # Get Expenses
 print(connector.expenses.get(
-    source_account_types=['PERSONAL_CASH_ACCOUNT', 'PERSONAL_CORPORATE_CREDIT_CARD_ACCOUNT'], import_state='PAID', filter_credit_expenses=True
+    source_account_type=['PERSONAL_CASH_ACCOUNT', 'PERSONAL_CORPORATE_CREDIT_CARD_ACCOUNT'], state='PAID', filter_credit_expenses=True
 ))
 
 # Import Fyle Dimensions to sqlite db
-connector.import_fyle_dimension()
+connector.import_fyle_dimensions()
