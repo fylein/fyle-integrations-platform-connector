@@ -5,7 +5,7 @@ workspace_id = 1
 
 fyle_credential = FyleCredential.objects.get(workspace_id=workspace_id)
 
-connector = PlatformConnector(fyle_credential, workspace_id)
+connector = PlatformConnector(fyle_credential)
 
 
 # Get Expenses
