@@ -16,12 +16,11 @@ class PlatformConnector:
 
     Parameters:
     fyle_credential (str): Fyle Credential instance.
-    workspace_id (str): Fyle Platform workspace ID. (optional)
     """
 
-    def __init__(self, fyle_credentials: FyleCredential, workspace_id=None):
+    def __init__(self, fyle_credentials: FyleCredential):
         server_url = '{}/platform/v1'.format(fyle_credentials.cluster_domain)
-        self.workspace_id = workspace_id
+        self.workspace_id = fyle_credentials.workspace_id
 
         self.connection = Platform(
             server_url=server_url,

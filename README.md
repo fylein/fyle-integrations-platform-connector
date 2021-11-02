@@ -38,10 +38,7 @@ A common platform connector for all the Fyle Integrations to interact with Fyle'
 ```
 from fyle_integrations_platform_connector import PlatformConnector
 
-connector = PlatformConnector(
-    fyle_credential=fyle_credential,
-    workspace_id=workspace_id
-)
+connector = PlatformConnector(fyle_credential=fyle_credential)
 
 # Get Expenses
 expenses = connector.expenses.get(
