@@ -8,4 +8,4 @@ source secrets.sh
 python manage.py migrate
 
 # Run script
-python manage.py shell < script.py 
+python manage.py shell < raw_script.py

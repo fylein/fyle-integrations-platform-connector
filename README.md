@@ -36,14 +36,10 @@ A common platform connector for all the Fyle Integrations to interact with Fyle'
 ##### Usage
 
 ```
-from fyle_integrations_platform_connector import PlatformConnector as PlatformIntegrationsConnector
+from fyle_integrations_platform_connector import PlatformConnector
 
-connector = PlatformIntegrationsConnector(
-    cluster_domain=cluster_domain,
-    token_url=settings.FYLE_TOKEN_URI,
-    client_id=settings.FYLE_CLIENT_ID, 
-    client_secret=settings.FYLE_CLIENT_SECRET,
-    refresh_token=refresh_token,
+connector = PlatformConnector(
+    fyle_credential=fyle_credential,
     workspace_id=workspace_id
 )
 
@@ -74,6 +70,11 @@ python3 -m venv venv && source venv/bin/activate && pip install -r requirements.
 Copy sample secrets file and add secret environment variables -
 ```
 cp sample_secrets.sh secrets.sh
+```
+
+Copy sample script file -
+```
+cp script.py raw_script.py
 ```
 
 

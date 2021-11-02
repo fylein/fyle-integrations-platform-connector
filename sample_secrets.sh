@@ -1,5 +1,5 @@
 export CLUSTER_DOMAIN=''
-export TOKEN_URL=''
-export CLIENT_ID=''
-export CLIENT_SECRET=''
+export FYLE_TOKEN_URI=''
+export FYLE_CLIENT_ID=''
+export FYLE_CLIENT_SECRET=''
 export REFRESH_TOKEN=''

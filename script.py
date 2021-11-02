@@ -1,16 +1,11 @@
-import os
-
 from connector.fyle_integrations_platform_connector import PlatformConnector
+from apps.workspaces.models import FyleCredential
 
+workspace_id = 1
 
-connector = PlatformConnector(
-    cluster_domain=os.environ['CLUSTER_DOMAIN'],
-    token_url=os.environ['TOKEN_URL'],
-    client_id=os.environ['CLIENT_ID'],
-    client_secret=os.environ['CLIENT_SECRET'],
-    refresh_token=os.environ['REFRESH_TOKEN'],
-    workspace_id=1
-)
+fyle_credential = FyleCredential.objects.get(workspace_id=workspace_id)
+
+connector = PlatformConnector(fyle_credential, workspace_id)
 
 
 # Get Expenses

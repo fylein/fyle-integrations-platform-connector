@@ -134,4 +134,6 @@ dry_run.py
 structure.yml
 fyle_accounting_mappings/
 secrets.sh
-script.py
+raw_script.py
+local_run.sh
+secret*

@@ -1,6 +1,9 @@
 import logging
+import os
+
 from fyle.platform import Platform
 
+from apps.workspaces.models import FyleCredential
 from .apis import Expenses, Employees, Categories, Projects, CostCenters, ExpenseCustomFields, CorporateCards
 
 logger = logging.getLogger(__name__)
@@ -12,25 +15,20 @@ class PlatformConnector:
     (refresh token grant type).
 
     Parameters:
-    cluster_domain (str): Fyle Platform cluster domain.
-    token_url (str): Fyle Platform token URL.
-    client_id (str): Fyle Platform client ID.
-    client_secret (str): Fyle Platform client secret.
-    refresh_token (str): Fyle Platform refresh token.
+    fyle_credential (str): Fyle Credential instance.
     workspace_id (str): Fyle Platform workspace ID. (optional)
     """
 
-    def __init__(self, cluster_domain: str, token_url: str, client_id: str, client_secret: str,
-        refresh_token: str, workspace_id=None):
-        server_url = '{}/platform/v1'.format(cluster_domain)
+    def __init__(self, fyle_credentials: FyleCredential, workspace_id=None):
+        server_url = '{}/platform/v1'.format(fyle_credentials.cluster_domain)
         self.workspace_id = workspace_id
 
         self.connection = Platform(
             server_url=server_url,
-            token_url=token_url,
-            client_id=client_id,
-            client_secret=client_secret,
-            refresh_token=refresh_token
+            token_url=os.environ.get('FYLE_TOKEN_URI'),
+            client_id=os.environ.get('FYLE_CLIENT_ID'),
+            client_secret=os.environ.get('FYLE_CLIENT_SECRET'),
+            refresh_token=fyle_credentials.refresh_token
         )
 
         self.expenses = Expenses()
