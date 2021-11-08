@@ -16,8 +16,8 @@ class CorporateCards(Base):
             card_attributes = []
             for card in items['data']:
                 value = '{} - {}'.format(
-                    card['card_number'][-6:].replace('*','').replace('x','').replace('X','').replace('-',''),
-                    card['bank_name']
+                    card['bank_name'],
+                    card['card_number'][-6:].replace('-', '')
                 )
 
                 card_attributes.append({
