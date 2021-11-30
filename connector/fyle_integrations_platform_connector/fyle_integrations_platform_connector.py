@@ -19,7 +19,7 @@ class PlatformConnector:
     """
 
     def __init__(self, fyle_credentials: FyleCredential):
-        server_url = '{}/platform/v1'.format(fyle_credentials.cluster_domain)
+        server_url = '{}/platform/v1beta'.format(fyle_credentials.cluster_domain)
         self.workspace_id = fyle_credentials.workspace_id
 
         self.connection = Platform(
@@ -44,13 +44,13 @@ class PlatformConnector:
 
     def set_connection(self):
         """Set connection with Fyle Platform APIs."""
-        self.expenses.set_connection(self.connection.v1.admin.expenses)
-        self.employees.set_connection(self.connection.v1.admin.employees)
-        self.categories.set_connection(self.connection.v1.admin.categories)
-        self.projects.set_connection(self.connection.v1.admin.projects)
-        self.cost_centers.set_connection(self.connection.v1.admin.cost_centers)
-        self.expense_custom_fields.set_connection(self.connection.v1.admin.expense_fields)
-        self.corporate_cards.set_connection(self.connection.v1.admin.corporate_cards)
+        self.expenses.set_connection(self.connection.v1beta.admin.expenses)
+        self.employees.set_connection(self.connection.v1beta.admin.employees)
+        self.categories.set_connection(self.connection.v1beta.admin.categories)
+        self.projects.set_connection(self.connection.v1beta.admin.projects)
+        self.cost_centers.set_connection(self.connection.v1beta.admin.cost_centers)
+        self.expense_custom_fields.set_connection(self.connection.v1beta.admin.expense_fields)
+        self.corporate_cards.set_connection(self.connection.v1beta.admin.corporate_cards)
 
 
     def set_workspace_id(self):
