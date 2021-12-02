@@ -15,8 +15,8 @@ class ExpenseCustomFields(Base):
         generator = self.connection.list_all(query_params)
 
         for items in generator:
-            attributes = []
             for row in items['data']:
+                attributes = []
                 count = 1
                 attribute_type = row['field_name'].upper().replace(' ', '_')
                 for option in row['options']:
@@ -24,7 +24,10 @@ class ExpenseCustomFields(Base):
                         'attribute_type': attribute_type,
                         'display_name': row['field_name'],
                         'value': option,
-                        'source_id': 'expense_custom_field.{}.{}'.format(row['field_name'].lower(), count)
+                        'source_id': 'expense_custom_field.{}.{}'.format(row['field_name'].lower(), count),
+                        'detail': {
+                            'custom_field_id': row['id']
+                        }
                     })
                     count = count + 1
                 self.attribute_type = attribute_type
