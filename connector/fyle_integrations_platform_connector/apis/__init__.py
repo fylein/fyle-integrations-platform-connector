@@ -5,6 +5,7 @@ from .projects import Projects
 from .cost_centers import CostCenters
 from .expense_custom_fields import ExpenseCustomFields
 from .corporate_cards  import CorporateCards
+from .reimbursements import Reimbursements
 
 __all__ = [
     'Expenses',
@@ -13,5 +14,6 @@ __all__ = [
     'Projects',
     'CostCenters',
     'ExpenseCustomFields',
-    'CorporateCards'
+    'CorporateCards',
+    'Reimbursements'
 ]

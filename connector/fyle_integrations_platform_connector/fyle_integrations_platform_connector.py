@@ -4,7 +4,8 @@ import os
 from fyle.platform import Platform
 
 from apps.workspaces.models import FyleCredential
-from .apis import Expenses, Employees, Categories, Projects, CostCenters, ExpenseCustomFields, CorporateCards
+from .apis import Expenses, Employees, Categories, Projects, CostCenters, ExpenseCustomFields, CorporateCards, \
+    Reimbursements
 
 logger = logging.getLogger(__name__)
 logger.level = logging.INFO
@@ -37,6 +38,7 @@ class PlatformConnector:
         self.cost_centers = CostCenters()
         self.expense_custom_fields = ExpenseCustomFields()
         self.corporate_cards = CorporateCards()
+        self.reimbursements = Reimbursements()
 
         self.set_connection()
         self.set_workspace_id()
@@ -51,6 +53,7 @@ class PlatformConnector:
         self.cost_centers.set_connection(self.connection.v1beta.admin.cost_centers)
         self.expense_custom_fields.set_connection(self.connection.v1beta.admin.expense_fields)
         self.corporate_cards.set_connection(self.connection.v1beta.admin.corporate_cards)
+        self.reimbursements.set_connection(self.connection.v1beta.admin.reimbursements)
 
 
     def set_workspace_id(self):
@@ -62,6 +65,7 @@ class PlatformConnector:
         self.cost_centers.set_workspace_id(self.workspace_id)
         self.expense_custom_fields.set_workspace_id(self.workspace_id)
         self.corporate_cards.set_workspace_id(self.workspace_id)
+        self.reimbursements.set_workspace_id(self.workspace_id)
 
 
     def import_fyle_dimensions(self):

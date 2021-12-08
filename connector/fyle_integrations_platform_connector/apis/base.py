@@ -22,8 +22,7 @@ class Base:
         self.workspace_id = workspace_id
 
 
-    @staticmethod
-    def __format_date(last_synced_at: datetime) -> str:
+    def format_date(self, last_synced_at: datetime) -> str:
         """
         Formats the date in the format of gte.2021-09-30T11:00:57.000Z
         """
@@ -43,7 +42,7 @@ class Base:
         :return: dict
         """
         last_synced_record = self.__get_last_synced_at()
-        updated_at = self.__format_date(last_synced_record.updated_at) if last_synced_record else None
+        updated_at = self.format_date(last_synced_record.updated_at) if last_synced_record else None
 
         params = {'order': 'updated_at.desc'}
         params.update(self.query_params)
