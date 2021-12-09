@@ -38,4 +38,4 @@ class Reimbursements(Base):
         """
         generator = self.__get_all_generator()
         for items in generator:
-            Reimbursement.create_or_update_reimbursement_objects(items, self.workspace_id)
+            Reimbursement.create_or_update_reimbursement_objects(items['data'], self.workspace_id)
