@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'fyle_accounting_mappings',
     # Created apps
     'connector',
-    'apps.workspaces'
+    'apps.workspaces',
+    'apps.fyle'
 ]
 
 MIDDLEWARE = [

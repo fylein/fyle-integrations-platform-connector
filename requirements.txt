@@ -1,4 +1,4 @@
-fyle
-fyle_accounting_mappings
+fyle>=v0.19.0
+fyle_accounting_mappings==1.7.0
 python-dateutil==2.8.1
 psycopg2-binary==2.8.4
