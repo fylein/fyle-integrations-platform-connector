@@ -44,7 +44,6 @@ class PlatformConnector:
         self.set_connection()
         self.set_workspace_id()
 
-
     def set_connection(self):
         """Set connection with Fyle Platform APIs."""
         self.expenses.set_connection(self.connection.v1beta.admin.expenses)
@@ -69,10 +68,12 @@ class PlatformConnector:
         self.reimbursements.set_workspace_id(self.workspace_id)
         self.tax_groups.set_workspace_id(self.workspace_id)
 
-
-    def import_fyle_dimensions(self):
+    def import_fyle_dimensions(self, import_taxes):
         """Import Fyle Platform dimension."""
-        apis = ['employees', 'categories', 'projects', 'cost_centers', 'expense_custom_fields', 'corporate_cards', 'tax_groups']
+        apis = ['employees', 'categories', 'projects', 'cost_centers', 'expense_custom_fields', 'corporate_cards']
+
+        if import_taxes:
+            apis.append('tax_groups')
 
         for api in apis:
             dimension = getattr(self, api)
