@@ -68,7 +68,7 @@ class PlatformConnector:
         self.reimbursements.set_workspace_id(self.workspace_id)
         self.tax_groups.set_workspace_id(self.workspace_id)
 
-    def import_fyle_dimensions(self, import_taxes):
+    def import_fyle_dimensions(self, import_taxes: bool = False):
         """Import Fyle Platform dimension."""
         apis = ['employees', 'categories', 'projects', 'cost_centers', 'expense_custom_fields', 'corporate_cards']
 
