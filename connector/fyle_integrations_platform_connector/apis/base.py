@@ -62,6 +62,17 @@ class Base:
 
         return self.connection.list_all(query_params)
 
+    def post(self, payload):
+        """
+        Posting tax groups to Fyle
+        """
+        return self.connection.post(payload)
+
+    def post_bulk(self, payload):
+        """
+        Posting tax groups in Bulk
+        """
+        return self.connection.post_bulk(payload)
 
     def bulk_create_or_update_expense_attributes(self, attributes: List[dict], update_existing: bool = False) -> None:
         """
