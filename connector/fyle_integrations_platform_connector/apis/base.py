@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List
+from typing import Dict, List
 
 from fyle_accounting_mappings.models import ExpenseAttribute
 
@@ -62,17 +62,11 @@ class Base:
 
         return self.connection.list_all(query_params)
 
-    def post(self, payload):
-        """
-        Post data to Fyle
-        """
-        return self.connection.post(payload)
-
-    def post_bulk(self, payload):
+    def post_bulk(self, payload: List[Dict]):
         """
         Post data to Fyle in Bulk
         """
-        return self.connection.post_bulk(payload)
+        return self.connection.post_bulk({'data': payload})
 
     def bulk_create_or_update_expense_attributes(self, attributes: List[dict], update_existing: bool = False) -> None:
         """
