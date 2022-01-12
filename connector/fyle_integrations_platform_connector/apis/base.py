@@ -64,13 +64,13 @@ class Base:
 
     def post(self, payload):
         """
-        Posting tax groups to Fyle
+        Post data to Fyle
         """
         return self.connection.post(payload)
 
     def post_bulk(self, payload):
         """
-        Posting tax groups in Bulk
+        Post data to Fyle in Bulk
         """
         return self.connection.post_bulk(payload)
 
