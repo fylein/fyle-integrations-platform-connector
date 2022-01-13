@@ -121,7 +121,6 @@ class Expenses(Base):
 
         for expense in expenses:
             custom_properties = {}
-
             for custom_field in expense['custom_fields']:
                 custom_properties[custom_field['name']] = custom_field['value']
 
@@ -135,6 +134,8 @@ class Expenses(Base):
                 'org_id': expense['org_id'],
                 'claim_number': expense['report']['seq_num'] if expense['report'] else None,
                 'amount': expense['amount'],
+                'tax_amount': expense['tax_amount'],
+                'tax_group_id': expense['tax_group_id'],
                 'currency': expense['currency'],
                 'foreign_amount': expense['foreign_amount'],
                 'foreign_currency': expense['foreign_currency'],
