@@ -130,6 +130,7 @@ class Expenses(Base):
                 'category': expense['category']['name'],
                 'sub_category': expense['category']['sub_category'],
                 'project': expense['project']['name'] if expense['project'] else None,
+                'project_id': expense['project']['id'] if expense['project'] else None,
                 'expense_number': expense['seq_num'],
                 'org_id': expense['org_id'],
                 'claim_number': expense['report']['seq_num'] if expense['report'] else None,
