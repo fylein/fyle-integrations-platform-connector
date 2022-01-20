@@ -137,6 +137,7 @@ class Expenses(Base):
                 'amount': expense['amount'],
                 'tax_amount': expense['tax_amount'],
                 'tax_group_id': expense['tax_group_id'],
+                'settled_at': expense['last_settled_at'],
                 'currency': expense['currency'],
                 'foreign_amount': expense['foreign_amount'],
                 'foreign_currency': expense['foreign_currency'],
