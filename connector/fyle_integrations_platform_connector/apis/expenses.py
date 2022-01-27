@@ -10,7 +10,7 @@ class Expenses(Base):
     """Class for Expenses APIs."""
 
     def get(self, source_account_type: List[str], state: str, last_synced_at: datetime=None,
-        filter_credit_expenses: bool=False) -> List[dict]:
+        settled_at: datetime=None, filter_credit_expenses: bool=False) -> List[dict]:
         """
         Get expenses.
 
@@ -25,12 +25,11 @@ class Expenses(Base):
         """
         all_expenses = []
 
-        query_params = self.__construct_expenses_query_params(source_account_type, state, last_synced_at)
+        query_params = self.__construct_expenses_query_params(source_account_type, state, last_synced_at, settled_at)
         generator = self.connection.list_all(query_params)
 
         for expense_list in generator:
             expenses = self.__filter_personal_expenses(expense_list)
-
             if filter_credit_expenses:
                 expenses = self.__filter_credit_expenses(expenses)
             all_expenses.extend(expenses)
@@ -39,7 +38,7 @@ class Expenses(Base):
 
 
     @staticmethod
-    def __construct_expenses_query_params(source_account_type: List[str], state: str, updated_at: datetime) -> dict:
+    def __construct_expenses_query_params(source_account_type: List[str], state: str, updated_at: datetime, settled_at: datetime) -> dict:
         """
         Construct expenses query params.
         :param source_account_type: Source account types.
@@ -47,6 +46,7 @@ class Expenses(Base):
         :param updated_at: Updated at.
         :return: Query params.
         """
+
         state = [state]
         if state[0] == 'PAYMENT_PROCESSING' and updated_at is not None:
             state.append('PAID')
@@ -61,9 +61,6 @@ class Expenses(Base):
             source_account_type_filter.append('PERSONAL_CORPORATE_CREDIT_CARD_ACCOUNT')
             source_account_type_filter = 'in.{}'.format(tuple(source_account_type_filter)).replace("'", '"')
 
-        if updated_at:
-            updated_at = 'gte.{}'.format(datetime.strftime(updated_at, '%Y-%m-%dT%H:%M:%S.000Z'))
-
         query_params = {
             'order': 'updated_at.desc',
             'source_account->type': source_account_type_filter,
@@ -71,7 +68,12 @@ class Expenses(Base):
         }
 
         if updated_at:
+            updated_at = 'gte.{}'.format(datetime.strftime(updated_at, '%Y-%m-%dT%H:%M:%S.000Z'))
             query_params['updated_at'] = updated_at
+
+        if settled_at:
+            settled_at = 'gte.{}'.format(datetime.strftime(settled_at, '%Y-%m-%dT%H:%M:%S.000Z'))
+            query_params['last_settled_at'] = settled_at
 
         return query_params
 
