@@ -16,12 +16,14 @@ class Projects(Base):
         for items in generator:
             project_attributes = []
             for project in items['data']:
-                if not project['sub_project']:
-                    project_attributes.append({
-                        'attribute_type': self.attribute_type,
-                        'display_name': self.attribute_type.replace('_', ' ').title(),
-                        'value': project['name'],
-                        'source_id': project['id']
-                    })
+                if project['sub_project']:
+                    project['name'] = '{0} / {1}'.format(project['name'], project['sub_project'])
+
+                project_attributes.append({
+                    'attribute_type': self.attribute_type,
+                    'display_name': self.attribute_type.replace('_', ' ').title(),
+                    'value': project['name'],
+                    'source_id': project['id']
+                })
 
             self.bulk_create_or_update_expense_attributes(project_attributes)
