@@ -21,6 +21,7 @@ class Employees(Base):
                     'value': employee['user']['email'],
                     'source_id': employee['id'],
                     'detail': {
+                        'user_id': employee['user_id'],
                         'employee_code': employee['code'],
                         'full_name': employee['user']['full_name'],
                         'location': employee['location'],
