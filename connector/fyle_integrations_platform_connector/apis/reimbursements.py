@@ -30,6 +30,15 @@ class Reimbursements(Base):
         query_params = self.__construct_query_params()
 
         return self.connection.list_all(query_params)
+    
+
+    def search_reimbursements(self, query_params):
+        """
+        Get of reimbursements filtered on query parameters
+        :return: Generator
+        """
+        query_params['order'] = 'updated_at.desc'
+        return self.connection.list_all(query_params)
 
 
     def sync(self):
