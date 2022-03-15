@@ -44,11 +44,9 @@ class Merchants(Base):
         generator = self.get_all_generator()
         for items in generator:
             merchant=items['data'][0]
-
             workspace_id = Workspace.objects.filter(fyle_org_id=merchant['org_id']).values_list('id',flat=True)[0]
             existing_merchants = ExpenseAttribute.objects.filter(
                 attribute_type='MERCHANT', workspace_id=workspace_id)
-
             delete_merchant_ids = []
 
             if(existing_merchants):
@@ -59,7 +57,7 @@ class Merchants(Base):
                 ExpenseAttribute.objects.filter(id__in = delete_merchant_ids).delete()
 
             merchant_attributes = []
-            
+
             for option in merchant['options']:
                 merchant_attributes.append({
                     'attribute_type': 'MERCHANT',
