@@ -1,7 +1,10 @@
 from heapq import merge
 from traceback import print_tb
+
+from apps.workspaces.models import Workspace
 from .base import Base
 from typing import List
+from fyle_accounting_mappings.models import ExpenseAttribute
 
 class Merchants(Base):
     """
@@ -41,14 +44,29 @@ class Merchants(Base):
         generator = self.get_all_generator()
         for items in generator:
             merchant=items['data'][0]
+
+            workspace_id = Workspace.objects.filter(fyle_org_id=merchant['org_id']).values_list('id',flat=True)[0]
+            existing_merchants = ExpenseAttribute.objects.filter(
+                attribute_type='MERCHANT', workspace_id=workspace_id)
+
+            delete_merchant_ids = []
+
+            if(existing_merchants):
+                for existing_merchant in existing_merchants:
+                    if existing_merchant.value not in merchant['options']:
+                        delete_merchant_ids.append(existing_merchant.id)
+                    
+                ExpenseAttribute.objects.filter(id__in = delete_merchant_ids).delete()
+
             merchant_attributes = []
+            
             for option in merchant['options']:
-                    merchant_attributes.append({
-                        'attribute_type': 'MERCHANT',
-                        'display_name': 'Merchant',
-                        'value': option,
-                        'source_id': merchant['id'],
-                    })
+                merchant_attributes.append({
+                    'attribute_type': 'MERCHANT',
+                    'display_name': 'Merchant',
+                    'value': option,
+                    'source_id': merchant['id'],
+                })
 
             self.bulk_create_or_update_expense_attributes(merchant_attributes, True)
 
