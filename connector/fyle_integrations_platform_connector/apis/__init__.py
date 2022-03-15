@@ -7,6 +7,7 @@ from .expense_custom_fields import ExpenseCustomFields
 from .corporate_cards  import CorporateCards
 from .reimbursements import Reimbursements
 from .tax_groups import TaxGroups
+from .merchants import Merchants
 
 __all__ = [
     'Expenses',
@@ -17,5 +18,6 @@ __all__ = [
     'ExpenseCustomFields',
     'CorporateCards',
     'Reimbursements',
-    'TaxGroups'
+    'TaxGroups',
+    'Merchants'
 ]
