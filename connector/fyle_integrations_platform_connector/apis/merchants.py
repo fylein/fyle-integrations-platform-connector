@@ -13,6 +13,12 @@ class Merchants(Base):
     def __init__(self):
         Base.__init__(self, attribute_type='MERCHANT', query_params={'field_name':'eq.Merchant'})
 
+    def get(self):
+        generator = self.get_all_generator()
+        for items in generator:
+            merchant = items['data'][0]
+            return merchant
+
     def post(self, payload: List[str]):
         """
         Post data to Fyle 
