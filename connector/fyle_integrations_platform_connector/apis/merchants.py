@@ -17,7 +17,8 @@ class Merchants(Base):
         generator = self.get_all_generator()
         for items in generator:
             merchant = items['data'][0]
-            return merchant
+        
+        return merchant
 
     def post(self, payload: List[str]):
         """
@@ -38,7 +39,7 @@ class Merchants(Base):
                 'is_custom': merchant['is_custom'],
                 'is_mandatory': merchant['is_mandatory'],
                 'code': merchant['code'],
-                'default_value': merchant['default_value'],
+                'default_value': merchant['default_value'] if merchant['default_value'] else payload[0],
             }
 
         return self.connection.post({'data': merchant_payload})
