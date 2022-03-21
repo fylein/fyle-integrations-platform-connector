@@ -12,6 +12,16 @@ class Merchants(Base):
     """
     def __init__(self):
         Base.__init__(self, attribute_type='MERCHANT', query_params={'field_name':'eq.Merchant'})
+    
+    def construct_query_params(self) -> dict:
+        """
+        Constructs the query params for the API call.
+        :return: dict
+        """
+        params = {'order': 'updated_at.desc'}
+        params.update(self.query_params)
+
+        return params
 
     def get(self):
         generator = self.get_all_generator()
