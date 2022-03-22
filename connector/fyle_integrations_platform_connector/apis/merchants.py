@@ -1,6 +1,3 @@
-from heapq import merge
-from traceback import print_tb
-
 from apps.workspaces.models import Workspace
 from .base import Base
 from typing import List
@@ -26,9 +23,9 @@ class Merchants(Base):
     def get(self):
         generator = self.get_all_generator()
         for items in generator:
-            merchant = items['data'][0]
+            merchants = items['data'][0]
         
-        return merchant
+        return merchants
 
     def post(self, payload: List[str]):
         """
@@ -36,20 +33,20 @@ class Merchants(Base):
         """
         generator = self.get_all_generator()
         for items in generator:
-            merchant = items['data'][0]
-            merchant['options'].extend(payload)
+            merchants = items['data'][0]
+            merchants['options'].extend(payload)
             merchant_payload = { 
-                'id': merchant['id'],
+                'id': merchants['id'],
                 'field_name': 'Merchant',
                 'type': 'SELECT',
-                'options': merchant['options'],
-                'placeholder': merchant['placeholder'],
-                'category_ids': merchant['category_ids'],
-                'is_enabled': merchant['is_enabled'],
-                'is_custom': merchant['is_custom'],
-                'is_mandatory': merchant['is_mandatory'],
-                'code': merchant['code'],
-                'default_value': merchant['default_value'] if merchant['default_value'] else payload[0],
+                'options': merchants['options'],
+                'placeholder': merchants['placeholder'],
+                'category_ids': merchants['category_ids'],
+                'is_enabled': merchants['is_enabled'],
+                'is_custom': merchants['is_custom'],
+                'is_mandatory': merchants['is_mandatory'],
+                'code': merchants['code'],
+                'default_value': merchants['default_value'] if merchants['default_value'] else payload[0],
             }
 
         return self.connection.post({'data': merchant_payload})
@@ -60,26 +57,26 @@ class Merchants(Base):
         """
         generator = self.get_all_generator()
         for items in generator:
-            merchant=items['data'][0]
+            merchants=items['data'][0]
             existing_merchants = ExpenseAttribute.objects.filter(
                 attribute_type='MERCHANT', workspace_id=workspace_id)
             delete_merchant_ids = []
 
             if(existing_merchants):
                 for existing_merchant in existing_merchants:
-                    if existing_merchant.value not in merchant['options']:
+                    if existing_merchant.value not in merchants['options']:
                         delete_merchant_ids.append(existing_merchant.id)
                     
                 ExpenseAttribute.objects.filter(id__in=delete_merchant_ids).delete()
 
             merchant_attributes = []
 
-            for option in merchant['options']:
+            for option in merchants['options']:
                 merchant_attributes.append({
                     'attribute_type': 'MERCHANT',
                     'display_name': 'Merchant',
                     'value': option,
-                    'source_id': merchant['id'],
+                    'source_id': merchants['id'],
                 })
 
             self.bulk_create_or_update_expense_attributes(merchant_attributes, True)
