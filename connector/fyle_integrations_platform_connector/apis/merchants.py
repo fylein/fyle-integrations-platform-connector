@@ -46,7 +46,7 @@ class Merchants(Base):
                 'is_custom': merchants['is_custom'],
                 'is_mandatory': merchants['is_mandatory'],
                 'code': merchants['code'],
-                'default_value': merchants['default_value'] if merchants['default_value'] else payload[0],
+                'default_value': merchants['default_value'] if merchants['default_value'] else '',
             }
 
         return self.connection.post({'data': merchant_payload})
