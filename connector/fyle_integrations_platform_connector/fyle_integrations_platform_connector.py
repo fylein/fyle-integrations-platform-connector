@@ -5,7 +5,7 @@ from fyle.platform import Platform
 
 from apps.workspaces.models import FyleCredential
 from .apis import Expenses, Employees, Categories, Projects, CostCenters, ExpenseCustomFields, CorporateCards, \
-    Reimbursements, TaxGroups
+    Reimbursements, TaxGroups, Merchants
 
 logger = logging.getLogger(__name__)
 logger.level = logging.INFO
@@ -40,6 +40,7 @@ class PlatformConnector:
         self.corporate_cards = CorporateCards()
         self.reimbursements = Reimbursements()
         self.tax_groups = TaxGroups()
+        self.merchants = Merchants()
 
         self.set_connection()
         self.set_workspace_id()
@@ -55,6 +56,7 @@ class PlatformConnector:
         self.corporate_cards.set_connection(self.connection.v1beta.admin.corporate_cards)
         self.reimbursements.set_connection(self.connection.v1beta.admin.reimbursements)
         self.tax_groups.set_connection(self.connection.v1beta.admin.tax_groups)
+        self.merchants.set_connection(self.connection.v1beta.admin.expense_fields)
 
     def set_workspace_id(self):
         """Set workspace ID for Fyle Platform APIs."""
@@ -67,6 +69,7 @@ class PlatformConnector:
         self.corporate_cards.set_workspace_id(self.workspace_id)
         self.reimbursements.set_workspace_id(self.workspace_id)
         self.tax_groups.set_workspace_id(self.workspace_id)
+        self.merchants.set_workspace_id(self.workspace_id)
 
     def import_fyle_dimensions(self, import_taxes: bool = False):
         """Import Fyle Platform dimension."""

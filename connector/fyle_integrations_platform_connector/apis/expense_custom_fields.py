@@ -5,7 +5,7 @@ from .base import Base
 
 
 class ExpenseCustomFields(Base):
-    """Class for Expense Fields APIs."""
+    """Class for Expense Custom Fields APIs."""
 
     def sync(self):
         """
