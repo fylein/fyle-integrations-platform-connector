@@ -26,7 +26,8 @@ class ExpenseCustomFields(Base):
                         'value': option,
                         'source_id': 'expense_custom_field.{}.{}'.format(row['field_name'].lower(), count),
                         'detail': {
-                            'custom_field_id': row['id']
+                            'custom_field_id': row['id'],
+                            'placeholder': row['placeholder']
                         }
                     })
                     count = count + 1
