@@ -56,7 +56,7 @@ class Expenses(Base):
 
         source_account_type_filter = ['PERSONAL_CASH_ACCOUNT']
         if len(source_account_type) == 1:
-            source_account_type_filter = 'eq.{}'.format(source_account_type_filter[0])
+            source_account_type_filter = 'eq.{}'.format(source_account_type[0])
         elif len(source_account_type) > 1 and 'PERSONAL_CORPORATE_CREDIT_CARD_ACCOUNT' in source_account_type:
             source_account_type_filter.append('PERSONAL_CORPORATE_CREDIT_CARD_ACCOUNT')
             source_account_type_filter = 'in.{}'.format(tuple(source_account_type_filter)).replace("'", '"')
@@ -129,6 +129,7 @@ class Expenses(Base):
             objects.append({
                 'id': expense['id'],
                 'employee_email': expense['employee']['user']['email'],
+                'employee_name': expense['employee']['user']['full_name'],
                 'category': expense['category']['name'],
                 'sub_category': expense['category']['sub_category'],
                 'project': expense['project']['name'] if expense['project'] else None,
