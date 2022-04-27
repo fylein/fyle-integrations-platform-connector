@@ -62,6 +62,12 @@ class Base:
 
         return self.connection.list_all(query_params)
 
+    def post(self, payload: List[Dict]):
+        """
+        Post data to Fyle
+        """
+        return self.connection.post({'data': payload})
+
     def post_bulk(self, payload: List[Dict]):
         """
         Post data to Fyle in Bulk
