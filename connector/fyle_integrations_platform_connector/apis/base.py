@@ -67,6 +67,12 @@ class Base:
         Post data to Fyle in Bulk
         """
         return self.connection.post_bulk({'data': payload})
+    
+    def post(self, payload: Dict):
+        """
+        Post date to Fyle
+        """
+        return self.connection.post({'data': payload})
 
     def bulk_create_or_update_expense_attributes(self, attributes: List[dict], update_existing: bool = False) -> None:
         """
