@@ -48,7 +48,7 @@ class Expenses(Base):
         """
 
         state = [state]
-        if state[0] == 'PAYMENT_PROCESSING' and last_paid_at is not None:
+        if state[0] == 'PAYMENT_PROCESSING' and (updated_at is not None or settled_at is not None):
             state.append('PAID')
             state = 'in.{}'.format(tuple(state)).replace("'", '"')
         else:
