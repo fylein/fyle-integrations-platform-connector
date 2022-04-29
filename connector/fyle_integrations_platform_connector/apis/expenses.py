@@ -38,7 +38,7 @@ class Expenses(Base):
 
 
     @staticmethod
-    def __construct_expenses_query_params(source_account_type: List[str], state: str, updated_at: datetime, settled_at: datetime) -> dict:
+    def __construct_expenses_query_params(source_account_type: List[str], state: str, updated_at: datetime, settled_at: datetime, last_paid_at: datetime) -> dict:
         """
         Construct expenses query params.
         :param source_account_type: Source account types.
@@ -74,6 +74,10 @@ class Expenses(Base):
         if settled_at:
             settled_at = 'gte.{}'.format(datetime.strftime(settled_at, '%Y-%m-%dT%H:%M:%S.000Z'))
             query_params['last_settled_at'] = settled_at
+
+        if last_paid_at:
+            last_paid_at = 'gte.{}'.format(datetime.strftime(last_paid_at, '%Y-%m-%dT%H:%M:%S.000Z'))
+            query_params['report->last_paid_at'] = last_paid_at
 
         return query_params
 
