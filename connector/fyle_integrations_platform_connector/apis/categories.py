@@ -7,7 +7,6 @@ class Categories(Base):
     def __init__(self):
         Base.__init__(self, attribute_type='CATEGORY', query_params={'is_enabled': 'eq.true'})
 
-
     def sync(self):
         """
         Syncs the latest API data to DB.
@@ -16,7 +15,7 @@ class Categories(Base):
         for items in generator:
             category_attributes = []
             for category in items['data']:
-                if category['name'] != category['sub_category']:
+                if category['sub_category'] and category['name'] != category['sub_category']:
                     category['name'] = '{0} / {1}'.format(category['name'], category['sub_category'])
 
                 category_attributes.append({
