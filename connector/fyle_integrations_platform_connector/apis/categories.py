@@ -16,9 +16,10 @@ class Categories(Base):
         for items in generator:
             category_attributes = []
             for category in items['data']:
-                if category['name'] != category['sub_category']:
+                if category['name'] != category['sub_category'] and category['sub_category']:
                     category['name'] = '{0} / {1}'.format(category['name'], category['sub_category'])
-
+                else:
+                    category['name'] = '{0}'.format(category['name'])
                 category_attributes.append({
                     'attribute_type': self.attribute_type,
                     'display_name': self.attribute_type.replace('_', ' ').title(),
