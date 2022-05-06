@@ -3,18 +3,13 @@ import base64
 import requests
 
 from .base import Base
-
-    
-def get_as_base64(url):
-    return base64.b64encode(requests.get(url).content).decode('ascii')
-
 class Files(Base):
     """
     Class for File API
     """
 
-    def __init__(self):
-        Base.__init__(self, attribute_type='FILE')
+    def get_as_base64(self,url):
+        return base64.b64encode(requests.get(url).content).decode('ascii')
 
     def bulk_generate_file_urls(self, data: List[dict]) ->  List[dict]:
         """
@@ -26,9 +21,9 @@ class Files(Base):
         }
 
         attachments = self.connection.bulk_generate_file_urls(payload=payload)['data']
-        if attachments:
-            for attachment in attachments:
-                attachment['download_url'] = get_as_base64(attachment['download_url'])
+
+        for attachment in attachments:
+            attachment['download_url'] = self.get_as_base64(attachment['download_url'])
         
         return attachments
         
