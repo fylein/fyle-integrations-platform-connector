@@ -165,7 +165,9 @@ class Expenses(Base):
                 'expense_updated_at': expense['updated_at'],
                 'source_account_type': expense['source_account']['type'],
                 'verified_at': self.__format_date(expense['last_verified_at']),
-                'custom_properties': custom_properties
+                'custom_properties': custom_properties,
+                'payment_number': expense['report']['reimbursement_seq_num'] if expense['report'][
+                    'reimbursement_seq_num'] else None
             })
 
         return objects
