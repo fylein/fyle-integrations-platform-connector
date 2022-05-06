@@ -40,6 +40,15 @@ class Reimbursements(Base):
         query_params['order'] = 'updated_at.desc'
         return self.connection.list_all(query_params)
 
+    def bulk_post_reimbursements(self, data):
+        """
+        Post of reimbursements
+        """
+        payload = {
+            'data': data
+        }
+
+        return self.connection.bulk_post_reimbursements(payload)
 
     def sync(self):
         """
