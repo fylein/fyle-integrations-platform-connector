@@ -3,12 +3,13 @@ import base64
 import requests
 
 from .base import Base
+
 class Files(Base):
     """
     Class for File API
     """
 
-    def get_as_base64(self,url):
+    def get_as_base64(self, url):
         return base64.b64encode(requests.get(url).content).decode('ascii')
 
     def bulk_generate_file_urls(self, data: List[dict]) ->  List[dict]:
