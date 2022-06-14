@@ -20,6 +20,7 @@ class Employees(Base):
                     'display_name': self.attribute_type.replace('_', ' ').title(),
                     'value': employee['user']['email'],
                     'source_id': employee['id'],
+                    'active': True,
                     'detail': {
                         'user_id': employee['user_id'],
                         'employee_code': employee['code'],

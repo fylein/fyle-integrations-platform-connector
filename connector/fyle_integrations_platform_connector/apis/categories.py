@@ -22,7 +22,9 @@ class Categories(Base):
                     'attribute_type': self.attribute_type,
                     'display_name': self.attribute_type.replace('_', ' ').title(),
                     'value': category['name'],
-                    'source_id': category['id']
+                    'source_id': category['id'],
+                    'active': category['is_enabled'],
+                    'detail': None
                 })
 
-            self.bulk_create_or_update_expense_attributes(category_attributes)
+            self.bulk_create_or_update_expense_attributes(category_attributes, True)

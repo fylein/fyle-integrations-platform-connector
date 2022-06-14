@@ -25,6 +25,7 @@ class CorporateCards(Base):
                     'display_name': self.attribute_type.replace('_', ' ').title(),
                     'value': value,
                     'source_id': card['id'],
+                    'active': None,
                     'detail': {
                         'cardholder_name': card['cardholder_name']
                     }

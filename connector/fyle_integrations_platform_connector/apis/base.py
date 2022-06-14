@@ -98,6 +98,7 @@ class Base:
                     'attribute_type': self.attribute_type,
                     'display_name': self.attribute_type.replace('_', ' ').title(),
                     'value': row['name'],
+                    'active': True,
                     'source_id': row['id']
                 })
 

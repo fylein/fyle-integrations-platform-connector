@@ -23,6 +23,7 @@ class Projects(Base):
                     'attribute_type': self.attribute_type,
                     'display_name': self.attribute_type.replace('_', ' ').title(),
                     'value': project['name'],
+                    'active': True,
                     'source_id': project['id']
                 })
 

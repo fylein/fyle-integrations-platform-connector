@@ -1,6 +1,3 @@
-# 'is_custom': 'eq.true',
-#         'type': 'eq.SELECT',
-
 from .base import Base
 
 
@@ -24,6 +21,7 @@ class ExpenseCustomFields(Base):
                         'attribute_type': attribute_type,
                         'display_name': row['field_name'],
                         'value': option,
+                        'active': True,
                         'source_id': 'expense_custom_field.{}.{}'.format(row['field_name'].lower(), count),
                         'detail': {
                             'custom_field_id': row['id'],
