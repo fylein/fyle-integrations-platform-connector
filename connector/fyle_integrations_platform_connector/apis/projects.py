@@ -24,7 +24,7 @@ class Projects(Base):
                     'display_name': self.attribute_type.replace('_', ' ').title(),
                     'value': project['name'],
                     'source_id': project['id'],
-                    'active': project['is_enabled']
+                    'active': True
                 })
 
             self.bulk_create_or_update_expense_attributes(project_attributes, True)
