@@ -27,4 +27,4 @@ class Projects(Base):
                     'source_id': project['id']
                 })
 
-            self.bulk_create_or_update_expense_attributes(project_attributes)
+            self.bulk_create_or_update_expense_attributes(project_attributes, True)
