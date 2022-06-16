@@ -21,6 +21,7 @@ class TaxGroups(Base):
                         'display_name': 'Tax Group',
                         'value': tax_group['name'],
                         'source_id': tax_group['id'],
+                        'active': tax_group['is_enabled'],
                         'detail': {
                             'tax_rate': tax_group['percentage']
                         }

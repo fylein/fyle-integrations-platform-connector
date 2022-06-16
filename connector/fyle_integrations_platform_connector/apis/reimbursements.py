@@ -47,7 +47,6 @@ class Reimbursements(Base):
         payload = {
             'data': data
         }
-
         return self.connection.bulk_post_reimbursements(payload)
 
     def sync(self):

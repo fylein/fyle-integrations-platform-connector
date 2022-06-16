@@ -76,6 +76,7 @@ class Merchants(Base):
                     'attribute_type': 'MERCHANT',
                     'display_name': 'Merchant',
                     'value': option,
+                    'active': True,
                     'source_id': merchants['id'],
                 })
 

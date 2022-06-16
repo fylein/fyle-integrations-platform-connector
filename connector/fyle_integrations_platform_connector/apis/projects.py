@@ -23,7 +23,8 @@ class Projects(Base):
                     'attribute_type': self.attribute_type,
                     'display_name': self.attribute_type.replace('_', ' ').title(),
                     'value': project['name'],
+                    'active': True,
                     'source_id': project['id']
                 })
 
-            self.bulk_create_or_update_expense_attributes(project_attributes)
+            self.bulk_create_or_update_expense_attributes(project_attributes, True)
