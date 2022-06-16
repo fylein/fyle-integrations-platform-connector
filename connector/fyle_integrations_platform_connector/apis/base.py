@@ -112,3 +112,11 @@ class Base:
         generator = self.get_all_generator()
         attributes = self.__construct_expense_attribute_objects(generator)
         self.bulk_create_or_update_expense_attributes(attributes)
+
+    def get_by_id(self, id):
+        """
+        Get Single Resource object by ID
+        :param id: Resource object ID
+        :return: Resource Object
+        """
+        return self.connection.get_by_id(id)['data']
