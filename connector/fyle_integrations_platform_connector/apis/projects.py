@@ -27,4 +27,4 @@ class Projects(Base):
                     'active': project['is_enabled']
                 })
 
-            self.bulk_create_or_update_expense_attributes(project_attributes)
+            self.bulk_create_or_update_expense_attributes(project_attributes, True)
