@@ -5,7 +5,7 @@ class Projects(Base):
     """Class for Projects APIs."""
 
     def __init__(self):
-        Base.__init__(self, attribute_type='PROJECT', query_params={'is_enabled': 'eq.true'})
+        Base.__init__(self, attribute_type='PROJECT')
 
 
     def sync(self):
@@ -23,7 +23,7 @@ class Projects(Base):
                     'attribute_type': self.attribute_type,
                     'display_name': self.attribute_type.replace('_', ' ').title(),
                     'value': project['name'],
-                    'active': True,
+                    'active': project['is_enabled'],
                     'source_id': project['id']
                 })
 
