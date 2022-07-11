@@ -126,6 +126,12 @@ class Expenses(Base):
         objects = []
 
         for expense in expenses:
+            project_name = None
+            if expense['project']:
+                project_name = expense['project']['name']
+                if expense['project']['sub_project']:
+                    project_name = '{0} / {1}'.format(expense['project']['name'], expense['project']['sub_project'])
+
             custom_properties = {}
             for custom_field in expense['custom_fields']:
                 custom_properties[custom_field['name']] = custom_field['value']
@@ -136,7 +142,7 @@ class Expenses(Base):
                 'employee_name': expense['employee']['user']['full_name'],
                 'category': expense['category']['name'],
                 'sub_category': expense['category']['sub_category'],
-                'project': expense['project']['name'] if expense['project'] else None,
+                'project': project_name,
                 'project_id': expense['project']['id'] if expense['project'] else None,
                 'expense_number': expense['seq_num'],
                 'org_id': expense['org_id'],
