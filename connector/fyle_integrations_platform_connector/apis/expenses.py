@@ -3,6 +3,8 @@ from datetime import datetime
 
 from dateutil import parser
 
+from babel.numbers import get_currency_precision
+
 from .base import Base
 
 
@@ -147,7 +149,7 @@ class Expenses(Base):
                 'expense_number': expense['seq_num'],
                 'org_id': expense['org_id'],
                 'claim_number': expense['report']['seq_num'] if expense['report'] else None,
-                'amount': expense['amount'],
+                'amount': __round_to_currency_fraction(expense['amount'], expense['currency']),
                 'tax_amount': expense['tax_amount'],
                 'tax_group_id': expense['tax_group_id'],
                 'settled_at': expense['last_settled_at'],
@@ -194,3 +196,10 @@ class Expenses(Base):
             date_string = parser.parse(date_string)
 
         return date_string
+
+    @staticmethod
+    def __round_to_currency_fraction(amount: float, currency: str) -> float:
+        fraction = get_currency_precision(currency) or 2
+        rounded_amount = round(amount, fraction)
+
+        return rounded_amount
