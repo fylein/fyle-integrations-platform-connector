@@ -5,7 +5,7 @@ class Categories(Base):
     """Class for Categories APIs."""
 
     def __init__(self):
-        Base.__init__(self, attribute_type='CATEGORY', query_params={'is_enabled': 'eq.true'})
+        Base.__init__(self, attribute_type='CATEGORY')
 
     def sync(self):
         """
