@@ -41,13 +41,14 @@ class Base:
         Constructs the query params for the API call.
         :return: dict
         """
+        
         last_synced_record = self.__get_last_synced_at()
         updated_at = self.format_date(last_synced_record.updated_at) if last_synced_record else None
 
         params = {'order': 'updated_at.desc'}
         params.update(self.query_params)
-
-        if updated_at:
+        
+        if updated_at and self.attribute_type in ('CATEGORY', 'EMPLOYEE'):
             params['updated_at'] = updated_at
 
         return params
