@@ -9,6 +9,7 @@ from .reimbursements import Reimbursements
 from .tax_groups import TaxGroups
 from .merchants import Merchants
 from .files import Files
+from .departments import Departments
 
 __all__ = [
     'Expenses',
@@ -21,5 +22,6 @@ __all__ = [
     'Reimbursements',
     'TaxGroups',
     'Merchants',
-    'Files'
+    'Files',
+    'Departments'
 ]
