@@ -10,7 +10,7 @@ class Expenses(Base):
     """Class for Expenses APIs."""
 
     def get(self, source_account_type: List[str], state: str, last_synced_at: datetime=None,
-        settled_at: datetime=None, filter_credit_expenses: bool=False, last_paid_at=None) -> List[dict]:
+        settled_at: datetime=None,approved_at: datetime=None, filter_credit_expenses: bool=False, last_paid_at=None) -> List[dict]:
         """
         Get expenses.
 
@@ -25,7 +25,7 @@ class Expenses(Base):
         """
         all_expenses = []
 
-        query_params = self.__construct_expenses_query_params(source_account_type, state, last_synced_at, settled_at, last_paid_at)
+        query_params = self.__construct_expenses_query_params(source_account_type, state, last_synced_at, settled_at, approved_at, last_paid_at)
         generator = self.connection.list_all(query_params)
 
         for expense_list in generator:
@@ -38,7 +38,7 @@ class Expenses(Base):
 
 
     @staticmethod
-    def __construct_expenses_query_params(source_account_type: List[str], state: str, updated_at: datetime, settled_at: datetime, last_paid_at: datetime) -> dict:
+    def __construct_expenses_query_params(source_account_type: List[str], state: str, updated_at: datetime, settled_at: datetime, approved_at:datetime, last_paid_at: datetime) -> dict:
         """
         Construct expenses query params.
         :param source_account_type: Source account types.
@@ -49,6 +49,10 @@ class Expenses(Base):
 
         state = [state]
         if state[0] == 'PAYMENT_PROCESSING' and (updated_at is not None or settled_at is not None):
+            state.append('PAID')
+            state = 'in.{}'.format(tuple(state)).replace("'", '"')
+        elif state[0] == 'APPROVED' and (updated_at is not None or settled_at is not None or approved_at is not None):
+            state.append('PAYMENT_PROCESSING')
             state.append('PAID')
             state = 'in.{}'.format(tuple(state)).replace("'", '"')
         else:
@@ -78,6 +82,10 @@ class Expenses(Base):
         if last_paid_at:
             last_paid_at = 'gte.{}'.format(datetime.strftime(last_paid_at, '%Y-%m-%dT%H:%M:%S.000Z'))
             query_params['report->last_paid_at'] = last_paid_at
+        
+        if approved_at:
+            approved_at = 'gte.{}'.format(datetime.strftime(approved_at, '%Y-%m-%dT%H:%M:%S.000Z'))
+            query_params['report->last_approved_at'] = approved_at
 
         return query_params
 
