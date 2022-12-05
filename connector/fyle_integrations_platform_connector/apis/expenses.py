@@ -10,7 +10,7 @@ class Expenses(Base):
     """Class for Expenses APIs."""
 
     def get(self, source_account_type: List[str], state: str, last_synced_at: datetime=None,
-        settled_at: datetime=None,approved_at: datetime=None, filter_credit_expenses: bool=False, last_paid_at=None) -> List[dict]:
+        settled_at: datetime=None, approved_at: datetime=None, filter_credit_expenses: bool=False, last_paid_at=None) -> List[dict]:
         """
         Get expenses.
 
@@ -52,8 +52,7 @@ class Expenses(Base):
             state.append('PAID')
             state = 'in.{}'.format(tuple(state)).replace("'", '"')
         elif state[0] == 'APPROVED' and (updated_at is not None or settled_at is not None or approved_at is not None):
-            state.append('PAYMENT_PROCESSING')
-            state.append('PAID')
+            state.extend(['PAYMENT_PROCESSING', 'PAID'])
             state = 'in.{}'.format(tuple(state)).replace("'", '"')
         else:
             state = 'eq.{}'.format(state[0])
