@@ -171,6 +171,7 @@ class Expenses(Base):
                     if expense['matched_corporate_card_transactions'] else None,
                 'purpose': expense['purpose'],
                 'report_id': expense['report_id'],
+                'report_title': expense['report']['title'],
                 'file_ids': expense['file_ids'],
                 'spent_at': self.__format_date(expense['spent_at']),
                 'approved_at': self.__format_date(expense['report']['last_approved_at']) if expense['report'] else None,
