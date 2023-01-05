@@ -8,7 +8,7 @@ class Merchants(Base):
     Class for Merchants API
     """
     def __init__(self):
-        Base.__init__(self, attribute_type='MERCHANT', query_params={'field_name':'eq.Merchant'})
+        Base.__init__(self, attribute_type='MERCHANT', query_params={'column_name':'eq.merchant'})
     
     def construct_query_params(self) -> dict:
         """
@@ -37,7 +37,7 @@ class Merchants(Base):
             merchants['options'].extend(payload)
             merchant_payload = { 
                 'id': merchants['id'],
-                'field_name': 'Merchant',
+                'field_name': merchants['field_name'],
                 'type': 'SELECT',
                 'options': merchants['options'],
                 'placeholder': merchants['placeholder'],
