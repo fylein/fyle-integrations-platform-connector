@@ -31,3 +31,15 @@ class ExpenseCustomFields(Base):
                     count = count + 1
                 self.attribute_type = attribute_type
                 self.bulk_create_or_update_expense_attributes(attributes, True)
+
+    def list_all(self):
+        """
+        List all the custom fields
+        """
+        query_params = {'order': 'updated_at.desc', 'is_custom': 'eq.true', 'is_enabled': 'eq.true'}
+        generator = self.connection.list_all(query_params)
+
+        for items in generator:
+            custom_fields = items['data']
+
+        return custom_fields
