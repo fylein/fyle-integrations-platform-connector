@@ -40,6 +40,6 @@ class ExpenseCustomFields(Base):
         generator = self.connection.list_all(query_params)
 
         for items in generator:
-            custom_fields = items['data']
+            custom_fields = items['data'] if 'data' in items else []
 
         return custom_fields
