@@ -38,8 +38,9 @@ class ExpenseCustomFields(Base):
         """
         query_params = {'order': 'updated_at.desc', 'is_custom': 'eq.true', 'is_enabled': 'eq.true'}
         generator = self.connection.list_all(query_params)
+        custom_fields = []
 
         for items in generator:
-            custom_fields = items['data'] if 'data' in items else []
+            custom_fields = items['data']
 
         return custom_fields
