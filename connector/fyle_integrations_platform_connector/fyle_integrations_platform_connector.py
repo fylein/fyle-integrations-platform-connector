@@ -2,6 +2,7 @@ import logging
 import os
 
 from fyle.platform import Platform
+from fyle.platform.exceptions import InvalidTokenError
 
 from apps.workspaces.models import FyleCredential
 from .apis import Expenses, Employees, Categories, Projects, CostCenters, ExpenseCustomFields, CorporateCards, \
@@ -23,13 +24,17 @@ class PlatformConnector:
         server_url = '{}/platform/v1beta'.format(fyle_credentials.cluster_domain)
         self.workspace_id = fyle_credentials.workspace_id
 
-        self.connection = Platform(
-            server_url=server_url,
-            token_url=os.environ.get('FYLE_TOKEN_URI'),
-            client_id=os.environ.get('FYLE_CLIENT_ID'),
-            client_secret=os.environ.get('FYLE_CLIENT_SECRET'),
-            refresh_token=fyle_credentials.refresh_token
-        )
+        try:
+            self.connection = Platform(
+                server_url=server_url,
+                token_url=os.environ.get('FYLE_TOKEN_URI'),
+                client_id=os.environ.get('FYLE_CLIENT_ID'),
+                client_secret=os.environ.get('FYLE_CLIENT_SECRET'),
+                refresh_token=fyle_credentials.refresh_token
+            )
+        except Exception:
+            logger.info('Invalid refresh token')
+            raise InvalidTokenError('Invalid refresh token')
 
         self.expenses = Expenses()
         self.employees = Employees()
