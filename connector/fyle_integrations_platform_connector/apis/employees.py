@@ -7,6 +7,17 @@ class Employees(Base):
     def __init__(self):
         Base.__init__(self, attribute_type='EMPLOYEE', query_params={'is_enabled': 'eq.true', 'has_accepted_invite': 'eq.true'})
 
+    def get_employee_by_email(self, email: str):
+        """
+        Get employee by email
+        """
+        return self.connection.list({
+            'user->email': 'eq.{}'.format(email),
+            'offset': 0,
+            'limit': 1,
+            'order': 'updated_at.desc'
+        })['data']
+
     def sync(self):
         """
         Syncs the latest API data to DB.
