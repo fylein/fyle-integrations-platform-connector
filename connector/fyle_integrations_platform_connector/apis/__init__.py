@@ -10,6 +10,7 @@ from .tax_groups import TaxGroups
 from .merchants import Merchants
 from .files import Files
 from .departments import Departments
+from .expense_fields import ExpenseFields
 
 __all__ = [
     'Expenses',
@@ -23,5 +24,6 @@ __all__ = [
     'TaxGroups',
     'Merchants',
     'Files',
-    'Departments'
+    'Departments',
+    'ExpenseFields'
 ]
