@@ -23,8 +23,6 @@ class PlatformConnector:
     def __init__(self, fyle_credentials: FyleCredential):
         server_url = '{}/platform/v1beta'.format(fyle_credentials.cluster_domain)
         self.workspace_id = fyle_credentials.workspace_id
-        print('nilehs', server_url)
-        print('nilhes', os.environ)
         try:
             self.connection = Platform(
                 server_url=server_url,
@@ -34,7 +32,6 @@ class PlatformConnector:
                 refresh_token=fyle_credentials.refresh_token
             )
             
-            print(self.connection)
         except Exception:
             logger.info('Invalid refresh token')
             raise InvalidTokenError('Invalid refresh token')

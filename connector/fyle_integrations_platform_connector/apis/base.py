@@ -90,7 +90,7 @@ class Base:
         Create or Update Expense Fields
         :param attribute: Dict of Single Expense Fields
         """
-        print(attribute)
+
         ExpenseFields.create_or_update_expense_fields(
            attribute, self.workspace_id
         )
