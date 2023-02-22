@@ -15,7 +15,10 @@ class ExpenseFields(Base):
         Syncs the latest API data to DB.
         """
         generator = self.get_all_generator()
+        expense_fields = []
         for items in generator:
             for expense_field in items['data']:
-                if expense_field['field_name'] in ['Project', 'Cost Center']:   
-                    self.create_or_update_expense_fields(expense_field)
+                if expense_field['field_name'] in ['Project', 'Cost Center']:
+                    expense_fields.append(expense_field)
+
+        self.create_or_update_expense_fields(expense_fields)

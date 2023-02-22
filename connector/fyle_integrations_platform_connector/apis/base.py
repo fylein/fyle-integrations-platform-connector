@@ -85,14 +85,14 @@ class Base:
             attributes, self.attribute_type, self.workspace_id, update_existing
         )
 
-    def create_or_update_expense_fields(self, attribute: dict):
+    def create_or_update_expense_fields(self, attributes: List[dict]):
         """
         Create or Update Expense Fields
         :param attribute: Dict of Single Expense Fields
         """
 
         ExpenseFields.create_or_update_expense_fields(
-           attribute, self.workspace_id
+           attributes, self.workspace_id
         )
 
     def __construct_expense_attribute_objects(self, generator) -> List[dict]:
