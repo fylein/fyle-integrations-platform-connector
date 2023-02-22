@@ -1,7 +1,7 @@
 from .base import Base
 
 
-class ExpenseField(Base):
+class ExpenseFields(Base):
     """
     Class For Expense Fields
     """
@@ -17,4 +17,5 @@ class ExpenseField(Base):
         generator = self.get_all_generator()
         for items in generator:
             for expense_field in items['data']:
-                self.create_or_update_expense_fields(expense_field)
+                if expense_field['field_name'] in ['Project', 'Cost Center']:   
+                    self.create_or_update_expense_fields(expense_field)
