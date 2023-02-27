@@ -6,7 +6,7 @@ from fyle.platform.exceptions import InvalidTokenError
 
 from apps.workspaces.models import FyleCredential
 from .apis import Expenses, Employees, Categories, Projects, CostCenters, ExpenseCustomFields, CorporateCards, \
-    Reimbursements, TaxGroups, Merchants, Files, Departments, ExpenseFields
+    Reimbursements, TaxGroups, Merchants, Files, ExpenseFields, Departments
 
 logger = logging.getLogger(__name__)
 logger.level = logging.INFO
