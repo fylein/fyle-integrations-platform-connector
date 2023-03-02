@@ -18,3 +18,21 @@ class ExpenseFields(Base):
         projects = self.connection.list(query_params)
 
         self.create_or_update_expense_fields(projects['data'], ['Project'])
+
+
+    def bulk_post_dependent_expense_field_values(self, data):
+        """
+        Post of Expense Field Values
+        """
+        payload = {
+            'data': data
+        }
+        return self.connection.bulk_post_dependent_expense_field_values(payload)
+
+
+    def get_dependent_expense_field_values(self):
+        """
+        Get of Dependent Expense Field Values
+        """
+
+        return self.connection.get_dependent_expense_field_values()
