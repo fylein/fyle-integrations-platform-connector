@@ -14,6 +14,7 @@ class ExpenseFields(Base):
         """
         Syncs the latest API data to DB.
         """
-        generator = self.get_all_generator()
-        for items in generator:
-            self.create_or_update_expense_fields(items['data'], ['Project', 'Cost Center'])
+        query_params = {'limit': 1, 'order': 'updated_at.desc', 'offset': 0, 'field_name': 'in.(Project)', 'is_custom': 'eq.False'}
+        projects = self.connection.list(query_params)
+
+        self.create_or_update_expense_fields(projects['data'], ['Project'])
