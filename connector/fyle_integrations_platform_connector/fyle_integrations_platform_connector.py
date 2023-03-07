@@ -66,7 +66,7 @@ class PlatformConnector:
         self.tax_groups.set_connection(self.connection.v1beta.admin.tax_groups)
         self.merchants.set_connection(self.connection.v1beta.admin.expense_fields)
         self.files.set_connection(self.connection.v1beta.admin.files)
-        self.departments.set_connection(self.connection.v1beta.admin.departments)
+        #self.departments.set_connection(self.connection.v1beta.admin.departments)
         self.expense_fields.set_connection(self.connection.v1beta.admin.expense_fields)
 
     def set_workspace_id(self):

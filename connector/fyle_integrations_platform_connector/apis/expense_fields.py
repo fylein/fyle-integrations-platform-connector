@@ -14,10 +14,19 @@ class ExpenseFields(Base):
         """
         Syncs the latest API data to DB.
         """
+        expense_fields = []
+
         query_params = {'limit': 1, 'order': 'updated_at.desc', 'offset': 0, 'field_name': 'in.(Project)', 'is_custom': 'eq.False'}
         projects = self.connection.list(query_params)
+        expense_fields.append(projects['data'][0])
 
-        self.create_or_update_expense_fields(projects['data'], ['Project'])
+        query_params = {'order': 'updated_at.desc', 'is_custom': 'eq.True', 'type': 'eq.DEPENDENT_SELECT'}
+        dependent_fields = self.connection.list_all(query_params)
+        for dependent_field in dependent_fields:
+            for field in dependent_field['data']:
+                expense_fields.append(field)
+
+        self.create_or_update_expense_fields(expense_fields, ['Project'])
 
 
     def bulk_post_dependent_expense_field_values(self, data):
