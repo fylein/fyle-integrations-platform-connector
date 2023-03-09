@@ -16,7 +16,7 @@ setuptools.setup(
     url='https://github.com/fylein/fyle-integrations-platform-connector',
     packages=setuptools.find_packages(),
     install_requires=[
-        'fyle_accounting_mappings>=1.7.0',
+        'fyle_accounting_mappings>=1.25.0',
         'fyle>=v0.28.0'
     ],
     classifiers=[

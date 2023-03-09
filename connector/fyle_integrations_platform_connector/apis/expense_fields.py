@@ -18,7 +18,9 @@ class ExpenseFields(Base):
 
         query_params = {'limit': 1, 'order': 'updated_at.desc', 'offset': 0, 'field_name': 'in.(Project)', 'is_custom': 'eq.False'}
         projects = self.connection.list(query_params)
-        expense_fields.append(projects['data'][0])
+
+        if (len(projects['data'])) > 0:
+            expense_fields.append(projects['data'][0])
 
         query_params = {'order': 'updated_at.desc', 'is_custom': 'eq.True', 'type': 'eq.DEPENDENT_SELECT'}
         dependent_fields = self.connection.list_all(query_params)
