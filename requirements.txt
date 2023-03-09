@@ -1,4 +1,4 @@
 fyle>=v0.28.0
-fyle_accounting_mappings==1.7.0
+fyle_accounting_mappings==1.25.0
 python-dateutil==2.8.1
 psycopg2-binary==2.8.4

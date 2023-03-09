@@ -6,7 +6,7 @@ from fyle.platform.exceptions import InvalidTokenError
 
 from apps.workspaces.models import FyleCredential
 from .apis import Expenses, Employees, Categories, Projects, CostCenters, ExpenseCustomFields, CorporateCards, \
-    Reimbursements, TaxGroups, Merchants, Files, Departments
+    Reimbursements, TaxGroups, Merchants, Files, ExpenseFields, Departments
 
 logger = logging.getLogger(__name__)
 logger.level = logging.INFO
@@ -23,7 +23,6 @@ class PlatformConnector:
     def __init__(self, fyle_credentials: FyleCredential):
         server_url = '{}/platform/v1beta'.format(fyle_credentials.cluster_domain)
         self.workspace_id = fyle_credentials.workspace_id
-
         try:
             self.connection = Platform(
                 server_url=server_url,
@@ -32,6 +31,7 @@ class PlatformConnector:
                 client_secret=os.environ.get('FYLE_CLIENT_SECRET'),
                 refresh_token=fyle_credentials.refresh_token
             )
+            
         except Exception:
             logger.info('Invalid refresh token')
             raise InvalidTokenError('Invalid refresh token')
@@ -48,6 +48,7 @@ class PlatformConnector:
         self.merchants = Merchants()
         self.files = Files()
         self.departments = Departments()
+        self.expense_fields = ExpenseFields()
 
         self.set_connection()
         self.set_workspace_id()
@@ -66,6 +67,7 @@ class PlatformConnector:
         self.merchants.set_connection(self.connection.v1beta.admin.expense_fields)
         self.files.set_connection(self.connection.v1beta.admin.files)
         self.departments.set_connection(self.connection.v1beta.admin.departments)
+        self.expense_fields.set_connection(self.connection.v1beta.admin.expense_fields)
 
     def set_workspace_id(self):
         """Set workspace ID for Fyle Platform APIs."""
@@ -81,10 +83,11 @@ class PlatformConnector:
         self.merchants.set_workspace_id(self.workspace_id)
         self.files.set_workspace_id(self.workspace_id)
         self.departments.set_workspace_id(self.workspace_id)
+        self.expense_fields.set_workspace_id(self.workspace_id)
 
     def import_fyle_dimensions(self, import_taxes: bool = False):
         """Import Fyle Platform dimension."""
-        apis = ['employees', 'categories', 'projects', 'cost_centers', 'expense_custom_fields', 'corporate_cards']
+        apis = ['employees', 'categories', 'projects', 'cost_centers', 'expense_custom_fields', 'corporate_cards', 'expense_fields']
 
         if import_taxes:
             apis.append('tax_groups')
