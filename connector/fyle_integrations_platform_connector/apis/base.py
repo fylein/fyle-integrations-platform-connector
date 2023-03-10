@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Dict, List
 
-from fyle_accounting_mappings.models import ExpenseAttribute, ExpenseFields
+from fyle_accounting_mappings.models import ExpenseAttribute, ExpenseField
 
 
 class Base:
@@ -91,7 +91,7 @@ class Base:
         :param attribute: Dict of Single Expense Fields
         """
 
-        ExpenseFields.create_or_update_expense_fields(
+        ExpenseField.create_or_update_expense_fields(
            attributes, fields_included, self.workspace_id
         )
 
