@@ -18,6 +18,26 @@ class Employees(Base):
             'order': 'updated_at.desc'
         })['data']
 
+    def get_admins(self):
+        """
+        Get admins of the org
+        """
+        admins = []
+        generator = self.connection.list_all({
+            'roles': 'like.%ADMIN%',
+            'order': 'updated_at.desc'
+        })
+
+        for items in generator:
+            for employee in items['data']:
+                admins.append({
+                    'user_id': employee['user']['id'],
+                    'email': employee['user']['email'],
+                    'full_name': employee['user']['full_name'],
+                })
+
+        return admins
+
     def sync(self):
         """
         Syncs the latest API data to DB.
