@@ -15,7 +15,7 @@ class ExpenseFields(Base):
         """
         query_params = {'limit': 1, 'order': 'updated_at.desc', 'offset': 0, 'field_name': 'eq.Project', 'is_custom': 'eq.False'}
         projects = self.connection.list(query_params)
-        print('projects',projects)
+
         project_field_id = None
 
         if (len(projects['data'])) > 0:
