@@ -87,7 +87,7 @@ class PlatformConnector:
 
     def import_fyle_dimensions(self, import_taxes: bool = False):
         """Import Fyle Platform dimension."""
-        apis = ['employees', 'categories', 'projects', 'cost_centers', 'expense_custom_fields', 'corporate_cards', 'expense_fields']
+        apis = ['employees', 'categories', 'projects', 'cost_centers', 'expense_custom_fields', 'corporate_cards']
 
         if import_taxes:
             apis.append('tax_groups')
