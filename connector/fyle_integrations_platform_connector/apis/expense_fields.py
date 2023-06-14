@@ -9,6 +9,20 @@ class ExpenseFields(Base):
     def __init__(self):
         Base.__init__(self, attribute_type='EXPENSE_FIELDS')
 
+    def get_project_field_id(self):
+        """
+        Get Project Field ID
+        """
+        query_params = {'limit': 1, 'order': 'updated_at.desc', 'offset': 0, 'field_name': 'eq.Project', 'is_custom': 'eq.False'}
+        projects = self.connection.list(query_params)
+        print('projects',projects)
+        project_field_id = None
+
+        if (len(projects['data'])) > 0:
+            project_field_id = projects['data'][0]['id']
+
+        return project_field_id
+
 
     def sync(self):
         """
