@@ -5,7 +5,11 @@ with open('../README.md', 'r', encoding='utf-8') as f:
 
 setuptools.setup(
     name='fyle-integrations-platform-connector',
+<<<<<<< HEAD
     version='1.30.0',
+=======
+    version='1.29.0',
+>>>>>>> master
     author='Shwetabh Kumar',
     author_email='shwetabh.kumar@fyle.in',
     description='A common platform connector for all the Fyle Integrations to interact with Fyle Platform APIs',
