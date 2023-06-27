@@ -142,6 +142,9 @@ class Expenses(Base):
             custom_properties = {}
             for custom_field in expense['custom_fields']:
                 custom_properties[custom_field['name']] = custom_field['value']
+            
+            matched_transaction = expense['matched_corporate_card_transactions'][0] if expense['matched_corporate_card_transactions'] else None
+            posted_at = matched_transaction['posted_at'] if matched_transaction and 'posted_at' in matched_transaction else None
 
             objects.append({
                 'id': expense['id'],
@@ -175,6 +178,7 @@ class Expenses(Base):
                 'file_ids': expense['file_ids'],
                 'spent_at': self.__format_date(expense['spent_at']),
                 'approved_at': self.__format_date(expense['report']['last_approved_at']) if expense['report'] else None,
+                'posted_at': self.__format_date(posted_at) if posted_at else None,
                 'expense_created_at': expense['created_at'],
                 'expense_updated_at': expense['updated_at'],
                 'source_account_type': expense['source_account']['type'],
