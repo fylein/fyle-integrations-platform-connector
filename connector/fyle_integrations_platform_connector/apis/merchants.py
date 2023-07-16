@@ -1,6 +1,7 @@
 from apps.workspaces.models import Workspace
 from .base import Base
 from typing import List
+from datetime import datetime
 from fyle_accounting_mappings.models import ExpenseAttribute
 
 class Merchants(Base):
@@ -51,11 +52,12 @@ class Merchants(Base):
 
         return self.connection.post({'data': merchant_payload})
 
-    def sync(self, workspace_id: int):
+    def sync(self, workspace_id: int, sync_after: datetime=None):
         """
         Syncs the latest API data to DB.
         """
-        generator = self.get_all_generator()
+        # TODO : This is not working fix this before merging.
+        generator = self.get_all_generator(sync_after=sync_after)
         for items in generator:
             merchants=items['data'][0]
             existing_merchants = ExpenseAttribute.objects.filter(

@@ -52,6 +52,8 @@ class Base:
         
         if updated_at and self.attribute_type not in ('CATEGORY', 'EMPLOYEE', 'CORPORATE_CARD'):
             params['updated_at'] = updated_at
+        elif sync_after and updated_at:
+            params['updated_at'] = updated_at
 
         return params
 
