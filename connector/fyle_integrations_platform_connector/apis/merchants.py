@@ -1,7 +1,6 @@
 from apps.workspaces.models import Workspace
 from .base import Base
 from typing import List
-from datetime import datetime
 from fyle_accounting_mappings.models import ExpenseAttribute
 
 class Merchants(Base):
@@ -56,7 +55,6 @@ class Merchants(Base):
         """
         Syncs the latest API data to DB.
         """
-        # TODO : This is not working fix this before merging.
         generator = self.get_all_generator()
         for items in generator:
             merchants=items['data'][0]
