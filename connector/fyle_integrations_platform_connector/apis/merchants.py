@@ -52,12 +52,12 @@ class Merchants(Base):
 
         return self.connection.post({'data': merchant_payload})
 
-    def sync(self, workspace_id: int, sync_after: datetime=None):
+    def sync(self, workspace_id: int):
         """
         Syncs the latest API data to DB.
         """
         # TODO : This is not working fix this before merging.
-        generator = self.get_all_generator(sync_after=sync_after)
+        generator = self.get_all_generator()
         for items in generator:
             merchants=items['data'][0]
             existing_merchants = ExpenseAttribute.objects.filter(
