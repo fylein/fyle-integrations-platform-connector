@@ -9,16 +9,6 @@ class Merchants(Base):
     """
     def __init__(self):
         Base.__init__(self, attribute_type='MERCHANT', query_params={'column_name':'eq.merchant'})
-    
-    def construct_query_params(self) -> dict:
-        """
-        Constructs the query params for the API call.
-        :return: dict
-        """
-        params = {'order': 'updated_at.desc'}
-        params.update(self.query_params)
-
-        return params
 
     def get(self):
         generator = self.get_all_generator()
@@ -51,7 +41,7 @@ class Merchants(Base):
 
         return self.connection.post({'data': merchant_payload})
 
-    def sync(self, workspace_id: int):
+    def sync(self):
         """
         Syncs the latest API data to DB.
         """
@@ -59,7 +49,7 @@ class Merchants(Base):
         for items in generator:
             merchants=items['data'][0]
             existing_merchants = ExpenseAttribute.objects.filter(
-                attribute_type='MERCHANT', workspace_id=workspace_id)
+                attribute_type='MERCHANT', workspace_id=self.workspace_id)
             delete_merchant_ids = []
 
             if(existing_merchants):
