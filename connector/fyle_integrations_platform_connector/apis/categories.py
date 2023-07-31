@@ -7,7 +7,7 @@ class Categories(Base):
     def __init__(self):
         Base.__init__(self, attribute_type='CATEGORY')
 
-    def sync(self, sync_after: datetime=None):
+    def sync(self, sync_after: datetime = None):
         """
         Syncs the latest API data to DB.
         """

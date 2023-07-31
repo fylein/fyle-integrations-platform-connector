@@ -9,7 +9,7 @@ class TaxGroups(Base):
     def __init__(self):
         Base.__init__(self, attribute_type='TAX_GROUP', query_params={'order': 'id.asc'})
 
-    def sync(self, sync_after: datetime=None):
+    def sync(self, sync_after: datetime = None):
         """
         Syncs the latest API data to DB.
         """

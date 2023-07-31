@@ -36,7 +36,7 @@ class Base:
         return ExpenseAttribute.get_last_synced_at(self.attribute_type, self.workspace_id)
 
 
-    def construct_query_params(self, sync_after: datetime=None) -> dict:
+    def construct_query_params(self, sync_after: datetime = None) -> dict:
         """
         Constructs the query params for the API call.
         :return: dict
@@ -58,7 +58,7 @@ class Base:
         return params
 
 
-    def get_all_generator(self, sync_after: datetime=None):
+    def get_all_generator(self, sync_after: datetime = None):
         """
         Returns the generator for retrieving data from the API.
         :return: Generator
@@ -109,7 +109,7 @@ class Base:
         return attributes
 
 
-    def sync(self, sync_after: datetime=None) -> None:
+    def sync(self, sync_after: datetime = None) -> None:
         """
         Syncs the latest API data to DB.
         """

@@ -9,7 +9,7 @@ class Projects(Base):
         Base.__init__(self, attribute_type='PROJECT')
 
 
-    def sync(self, sync_after: datetime=None):
+    def sync(self, sync_after: datetime = None):
         """
         Syncs the latest API data to DB.
         """
