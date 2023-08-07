@@ -50,9 +50,9 @@ class Base:
         params = {'order': 'updated_at.desc'}
         params.update(self.query_params)
 
-        if updated_at and self.attribute_type not in ('CATEGORY', 'EMPLOYEE', 'CORPORATE_CARD', 'MERCHANT'):
+        if sync_after:
             params['updated_at'] = updated_at
-        elif sync_after and updated_at:
+        elif updated_at and self.attribute_type not in ('CATEGORY', 'EMPLOYEE', 'CORPORATE_CARD', 'MERCHANT'):
             params['updated_at'] = updated_at
 
         return params
