@@ -1,3 +1,4 @@
+from datetime import datetime
 from .base import Base
 
 class TaxGroups(Base):
@@ -8,11 +9,11 @@ class TaxGroups(Base):
     def __init__(self):
         Base.__init__(self, attribute_type='TAX_GROUP', query_params={'order': 'id.asc'})
 
-    def sync(self):
+    def sync(self, sync_after: datetime = None):
         """
         Syncs the latest API data to DB.
         """
-        generator = self.get_all_generator()
+        generator = self.get_all_generator(sync_after)
         for items in generator:
             tax_attributes = []
             for tax_group in items['data']:

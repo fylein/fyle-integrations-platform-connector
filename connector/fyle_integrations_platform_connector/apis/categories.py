@@ -1,5 +1,5 @@
 from .base import Base
-
+from datetime import datetime
 
 class Categories(Base):
     """Class for Categories APIs."""
@@ -7,11 +7,11 @@ class Categories(Base):
     def __init__(self):
         Base.__init__(self, attribute_type='CATEGORY')
 
-    def sync(self):
+    def sync(self, sync_after: datetime = None):
         """
         Syncs the latest API data to DB.
         """
-        generator = self.get_all_generator()
+        generator = self.get_all_generator(sync_after=sync_after)
         for items in generator:
             category_attributes = []
             for category in items['data']:

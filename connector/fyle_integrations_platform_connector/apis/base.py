@@ -36,30 +36,34 @@ class Base:
         return ExpenseAttribute.get_last_synced_at(self.attribute_type, self.workspace_id)
 
 
-    def construct_query_params(self) -> dict:
+    def construct_query_params(self, sync_after: datetime = None) -> dict:
         """
         Constructs the query params for the API call.
         :return: dict
         """
-        
-        last_synced_record = self.__get_last_synced_at()
-        updated_at = self.format_date(last_synced_record.updated_at) if last_synced_record else None
+        if sync_after:
+            updated_at = self.format_date(sync_after)
+        else:
+            last_synced_record = self.__get_last_synced_at()
+            updated_at = self.format_date(last_synced_record.updated_at) if last_synced_record else None
 
         params = {'order': 'updated_at.desc'}
         params.update(self.query_params)
-        
-        if updated_at and self.attribute_type not in ('CATEGORY', 'EMPLOYEE', 'CORPORATE_CARD'):
+
+        if sync_after:
+            params['updated_at'] = updated_at
+        elif updated_at and self.attribute_type not in ('CATEGORY', 'EMPLOYEE', 'CORPORATE_CARD', 'MERCHANT'):
             params['updated_at'] = updated_at
 
         return params
 
 
-    def get_all_generator(self):
+    def get_all_generator(self, sync_after: datetime = None):
         """
         Returns the generator for retrieving data from the API.
         :return: Generator
         """
-        query_params = self.construct_query_params()
+        query_params = self.construct_query_params(sync_after)
 
         return self.connection.list_all(query_params)
 
@@ -105,11 +109,11 @@ class Base:
         return attributes
 
 
-    def sync(self) -> None:
+    def sync(self, sync_after: datetime = None) -> None:
         """
         Syncs the latest API data to DB.
         """
-        generator = self.get_all_generator()
+        generator = self.get_all_generator(sync_after)
         attributes = self.__construct_expense_attribute_objects(generator)
         self.bulk_create_or_update_expense_attributes(attributes)
 

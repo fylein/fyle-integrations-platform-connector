@@ -1,4 +1,5 @@
 from .base import Base
+from datetime import datetime
 
 
 class Projects(Base):
@@ -8,11 +9,11 @@ class Projects(Base):
         Base.__init__(self, attribute_type='PROJECT')
 
 
-    def sync(self):
+    def sync(self, sync_after: datetime = None):
         """
         Syncs the latest API data to DB.
         """
-        generator = self.get_all_generator()
+        generator = self.get_all_generator(sync_after)
         for items in generator:
             project_attributes = []
             for project in items['data']:
