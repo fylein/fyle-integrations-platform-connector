@@ -1,6 +1,8 @@
 from datetime import datetime
 from typing import Dict, List
 
+from apps.workspaces.models import Workspace
+
 from fyle_accounting_mappings.models import ExpenseAttribute
 
 
@@ -12,6 +14,7 @@ class Base:
         self.query_params = query_params
         self.connection = None
         self.workspace_id = None
+        self.workspace = None
 
 
     def set_connection(self, connection):
@@ -20,6 +23,7 @@ class Base:
 
     def set_workspace_id(self, workspace_id):
         self.workspace_id = workspace_id
+        self.workspace = Workspace.objects.get(workspace_id=self.workspace_id)
 
 
     def format_date(self, last_synced_at: datetime) -> str:
@@ -98,16 +102,22 @@ class Base:
         attributes = []
         for items in generator:
             for row in items['data']:
-                attributes.append({
-                    'attribute_type': self.attribute_type,
-                    'display_name': self.attribute_type.replace('_', ' ').title(),
-                    'value': row['name'],
-                    'active': True,
-                    'source_id': row['id']
-                })
+                if self.attribute_is_valid(row):
+                    attributes.append({
+                        'attribute_type': self.attribute_type,
+                        'display_name': self.attribute_type.replace('_', ' ').title(),
+                        'value': row['name'],
+                        'active': True,
+                        'source_id': row['id']
+                    })
 
         return attributes
 
+    def attribute_is_valid(self, attribute):
+        """
+        Validate whether attribute is from the same org or not
+        """
+        return attribute['org_id'] == self.workspace.fyle_org_id
 
     def sync(self, sync_after: datetime = None) -> None:
         """
