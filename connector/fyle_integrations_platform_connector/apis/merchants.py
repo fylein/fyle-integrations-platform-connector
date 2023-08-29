@@ -41,6 +41,31 @@ class Merchants(Base):
 
         return self.connection.post({'data': merchant_payload})
 
+
+    def post_xero_mechants(self, payload: List[str]):
+        """
+        Post data to Fyle 
+        """
+        generator = self.get_all_generator()
+        for items in generator:
+            merchants = items['data'][0]
+            merchant_payload = { 
+                'id': merchants['id'],
+                'field_name': merchants['field_name'],
+                'type': 'SELECT',
+                'options': payload,
+                'placeholder': merchants['placeholder'],
+                'category_ids': merchants['category_ids'],
+                'is_enabled': merchants['is_enabled'],
+                'is_custom': merchants['is_custom'],
+                'is_mandatory': merchants['is_mandatory'],
+                'code': merchants['code'],
+                'default_value': merchants['default_value'] if merchants['default_value'] else '',
+            }
+
+        return self.connection.post({'data': merchant_payload})
+
+
     def sync(self):
         """
         Syncs the latest API data to DB.
