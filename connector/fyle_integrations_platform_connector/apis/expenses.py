@@ -145,48 +145,48 @@ class Expenses(Base):
             
             matched_transaction = expense['matched_corporate_card_transactions'][0] if expense['matched_corporate_card_transactions'] else None
             posted_at = matched_transaction['posted_at'] if matched_transaction and 'posted_at' in matched_transaction else None
-
-            objects.append({
-                'id': expense['id'],
-                'employee_email': expense['employee']['user']['email'],
-                'employee_name': expense['employee']['user']['full_name'],
-                'category': expense['category']['name'],
-                'sub_category': expense['category']['sub_category'],
-                'project': project_name,
-                'project_id': expense['project']['id'] if expense['project'] else None,
-                'expense_number': expense['seq_num'],
-                'org_id': expense['org_id'],
-                'claim_number': expense['report']['seq_num'] if expense['report'] else None,
-                'amount': expense['amount'],
-                'tax_amount': expense['tax_amount'],
-                'tax_group_id': expense['tax_group_id'],
-                'settled_at': expense['last_settled_at'],
-                'currency': expense['currency'],
-                'foreign_amount': expense['foreign_amount'],
-                'foreign_currency': expense['foreign_currency'],
-                'settlement_id': expense['report']['settlement_id'] if expense['report'] else None,
-                'reimbursable': expense['is_reimbursable'],
-                'billable': expense['is_billable'],
-                'state': expense['state'],
-                'vendor': expense['merchant'],
-                'cost_center': expense['cost_center']['name'] if expense['cost_center'] else None,
-                'corporate_card_id': expense['matched_corporate_card_transactions'][0]['corporate_card_id'] \
-                    if expense['matched_corporate_card_transactions'] else None,
-                'purpose': expense['purpose'],
-                'report_id': expense['report_id'],
-                'report_title': expense['report']['title'],
-                'file_ids': expense['file_ids'],
-                'spent_at': self.__format_date(expense['spent_at']),
-                'approved_at': self.__format_date(expense['report']['last_approved_at']) if expense['report'] else None,
-                'posted_at': self.__format_date(posted_at) if posted_at else None,
-                'expense_created_at': expense['created_at'],
-                'expense_updated_at': expense['updated_at'],
-                'source_account_type': expense['source_account']['type'],
-                'verified_at': self.__format_date(expense['last_verified_at']),
-                'custom_properties': custom_properties,
-                'payment_number': expense['report']['reimbursement_seq_num'] if 'reimbursement_seq_num' in expense['report'] and \
-                    expense['report']['reimbursement_seq_num'] else None
-            })
+            if self.attribute_is_valid(expense):
+                objects.append({
+                    'id': expense['id'],
+                    'employee_email': expense['employee']['user']['email'],
+                    'employee_name': expense['employee']['user']['full_name'],
+                    'category': expense['category']['name'],
+                    'sub_category': expense['category']['sub_category'],
+                    'project': project_name,
+                    'project_id': expense['project']['id'] if expense['project'] else None,
+                    'expense_number': expense['seq_num'],
+                    'org_id': expense['org_id'],
+                    'claim_number': expense['report']['seq_num'] if expense['report'] else None,
+                    'amount': expense['amount'],
+                    'tax_amount': expense['tax_amount'],
+                    'tax_group_id': expense['tax_group_id'],
+                    'settled_at': expense['last_settled_at'],
+                    'currency': expense['currency'],
+                    'foreign_amount': expense['foreign_amount'],
+                    'foreign_currency': expense['foreign_currency'],
+                    'settlement_id': expense['report']['settlement_id'] if expense['report'] else None,
+                    'reimbursable': expense['is_reimbursable'],
+                    'billable': expense['is_billable'],
+                    'state': expense['state'],
+                    'vendor': expense['merchant'],
+                    'cost_center': expense['cost_center']['name'] if expense['cost_center'] else None,
+                    'corporate_card_id': expense['matched_corporate_card_transactions'][0]['corporate_card_id'] \
+                        if expense['matched_corporate_card_transactions'] else None,
+                    'purpose': expense['purpose'],
+                    'report_id': expense['report_id'],
+                    'report_title': expense['report']['title'],
+                    'file_ids': expense['file_ids'],
+                    'spent_at': self.__format_date(expense['spent_at']),
+                    'approved_at': self.__format_date(expense['report']['last_approved_at']) if expense['report'] else None,
+                    'posted_at': self.__format_date(posted_at) if posted_at else None,
+                    'expense_created_at': expense['created_at'],
+                    'expense_updated_at': expense['updated_at'],
+                    'source_account_type': expense['source_account']['type'],
+                    'verified_at': self.__format_date(expense['last_verified_at']),
+                    'custom_properties': custom_properties,
+                    'payment_number': expense['report']['reimbursement_seq_num'] if 'reimbursement_seq_num' in expense['report'] and \
+                        expense['report']['reimbursement_seq_num'] else None
+                })
 
         return objects
 

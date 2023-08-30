@@ -17,15 +17,16 @@ class TaxGroups(Base):
         for items in generator:
             tax_attributes = []
             for tax_group in items['data']:
-                    tax_attributes.append({
-                        'attribute_type': 'TAX_GROUP',
-                        'display_name': 'Tax Group',
-                        'value': tax_group['name'],
-                        'source_id': tax_group['id'],
-                        'active': tax_group['is_enabled'],
-                        'detail': {
-                            'tax_rate': tax_group['percentage']
-                        }
-                    })
+                    if self.attribute_is_valid(tax_group):
+                        tax_attributes.append({
+                            'attribute_type': 'TAX_GROUP',
+                            'display_name': 'Tax Group',
+                            'value': tax_group['name'],
+                            'source_id': tax_group['id'],
+                            'active': tax_group['is_enabled'],
+                            'detail': {
+                                'tax_rate': tax_group['percentage']
+                            }
+                        })
 
             self.bulk_create_or_update_expense_attributes(tax_attributes, True)
