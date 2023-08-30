@@ -42,7 +42,7 @@ class Merchants(Base):
         return self.connection.post({'data': merchant_payload})
 
 
-    def post_xero_mechants(self, payload: List[str]):
+    def post_merchant_names(self, payload: List[str]):
         """
         Post data to Fyle 
         """
