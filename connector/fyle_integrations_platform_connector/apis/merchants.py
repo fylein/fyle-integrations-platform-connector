@@ -17,14 +17,17 @@ class Merchants(Base):
         
         return merchants
 
-    def post(self, payload: List[str]):
+    def post(self, payload: List[str], skip_existing_merchants: bool = False):
         """
         Post data to Fyle 
         """
         generator = self.get_all_generator()
         for items in generator:
             merchants = items['data'][0]
-            merchants['options'].extend(payload)
+            if skip_existing_merchants:
+                merchants['options'] = payload
+            else:
+                merchants['options'].extend(payload)
             merchant_payload = { 
                 'id': merchants['id'],
                 'field_name': merchants['field_name'],
@@ -40,6 +43,7 @@ class Merchants(Base):
             }
 
         return self.connection.post({'data': merchant_payload})
+
 
     def sync(self):
         """
