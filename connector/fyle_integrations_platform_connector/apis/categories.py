@@ -15,16 +15,17 @@ class Categories(Base):
         for items in generator:
             category_attributes = []
             for category in items['data']:
-                if category['sub_category'] and category['name'] != category['sub_category']:
-                    category['name'] = '{0} / {1}'.format(category['name'], category['sub_category'])
+                if self.attribute_is_valid(category):
+                    if category['sub_category'] and category['name'] != category['sub_category']:
+                        category['name'] = '{0} / {1}'.format(category['name'], category['sub_category'])
 
-                category_attributes.append({
-                    'attribute_type': self.attribute_type,
-                    'display_name': self.attribute_type.replace('_', ' ').title(),
-                    'value': category['name'],
-                    'source_id': category['id'],
-                    'active': category['is_enabled'],
-                    'detail': None
-                })
+                    category_attributes.append({
+                        'attribute_type': self.attribute_type,
+                        'display_name': self.attribute_type.replace('_', ' ').title(),
+                        'value': category['name'],
+                        'source_id': category['id'],
+                        'active': category['is_enabled'],
+                        'detail': None
+                    })
 
             self.bulk_create_or_update_expense_attributes(category_attributes, True)

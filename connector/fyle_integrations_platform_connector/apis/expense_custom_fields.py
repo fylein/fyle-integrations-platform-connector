@@ -13,25 +13,26 @@ class ExpenseCustomFields(Base):
 
         for items in generator:
             for row in items['data']:
-                attributes = []
-                count = 1
-                attribute_type = row['field_name'].upper().replace(' ', '_')
-                for option in row['options']:
-                    attributes.append({
-                        'attribute_type': attribute_type,
-                        'display_name': row['field_name'],
-                        'value': option,
-                        'active': True,
-                        'source_id': 'expense_custom_field.{}.{}'.format(row['field_name'].lower(), count),
-                        'detail': {
-                            'custom_field_id': row['id'],
-                            'placeholder': row['placeholder'],
-                            'is_mandatory': row['is_mandatory']
-                        }
-                    })
-                    count = count + 1
-                self.attribute_type = attribute_type
-                self.bulk_create_or_update_expense_attributes(attributes, True)
+                if self.attribute_is_valid(row):
+                    attributes = []
+                    count = 1
+                    attribute_type = row['field_name'].upper().replace(' ', '_')
+                    for option in row['options']:
+                        attributes.append({
+                            'attribute_type': attribute_type,
+                            'display_name': row['field_name'],
+                            'value': option,
+                            'active': True,
+                            'source_id': 'expense_custom_field.{}.{}'.format(row['field_name'].lower(), count),
+                            'detail': {
+                                'custom_field_id': row['id'],
+                                'placeholder': row['placeholder'],
+                                'is_mandatory': row['is_mandatory']
+                            }
+                        })
+                        count = count + 1
+                    self.attribute_type = attribute_type
+                    self.bulk_create_or_update_expense_attributes(attributes, True)
 
     def list_all(self):
         """
