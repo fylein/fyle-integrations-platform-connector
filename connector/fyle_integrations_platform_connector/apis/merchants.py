@@ -17,20 +17,22 @@ class Merchants(Base):
         
         return merchants
 
-    def post(self, payload: List[str], skip_fyle_merchants: bool = False):
+    def post(self, payload: List[str], skip_existing_merchants: bool = False):
         """
         Post data to Fyle 
         """
         generator = self.get_all_generator()
         for items in generator:
             merchants = items['data'][0]
-            if skip_fyle_merchants:
+            if skip_existing_merchants:
+                merchants['options'] = payload
+            else:
                 merchants['options'].extend(payload)
             merchant_payload = { 
                 'id': merchants['id'],
                 'field_name': merchants['field_name'],
                 'type': 'SELECT',
-                'options': merchants['options'] if skip_fyle_merchants else payload,
+                'options': merchants['options'],
                 'placeholder': merchants['placeholder'],
                 'category_ids': merchants['category_ids'],
                 'is_enabled': merchants['is_enabled'],
