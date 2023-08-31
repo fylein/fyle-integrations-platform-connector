@@ -23,7 +23,7 @@ class Base:
 
     def set_workspace_id(self, workspace_id):
         self.workspace_id = workspace_id
-        self.workspace = Workspace.objects.get(workspace_id=self.workspace_id)
+        self.workspace = Workspace.objects.get(id=self.workspace_id)
 
 
     def format_date(self, last_synced_at: datetime) -> str:
