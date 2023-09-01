@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict
 from datetime import datetime
 
 from dateutil import parser
@@ -206,3 +206,12 @@ class Expenses(Base):
             date_string = parser.parse(date_string)
 
         return date_string
+
+    def post_bulk_accounting_export_summary(self, data: List[Dict]):
+        """
+        Post Bulk Accounting Export Summary
+        """
+        payload = {
+            'data': data
+        }
+        return self.connection.post_bulk_accounting_export_summary(payload)
