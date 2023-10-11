@@ -9,8 +9,8 @@ from .base import Base
 class Expenses(Base):
     """Class for Expenses APIs."""
 
-    def get(self, source_account_type: List[str], state: str, last_synced_at: datetime=None,
-        settled_at: datetime=None, approved_at: datetime=None, filter_credit_expenses: bool=False, last_paid_at=None) -> List[dict]:
+    def get(self, source_account_type: List[str], state: str=None, last_synced_at: datetime=None,
+        settled_at: datetime=None, approved_at: datetime=None, filter_credit_expenses: bool=False, last_paid_at=None, report_id: str=None) -> List[dict]:
         """
         Get expenses.
 
@@ -25,7 +25,7 @@ class Expenses(Base):
         """
         all_expenses = []
 
-        query_params = self.__construct_expenses_query_params(source_account_type, state, last_synced_at, settled_at, approved_at, last_paid_at)
+        query_params = self.__construct_expenses_query_params(source_account_type, state, last_synced_at, settled_at, approved_at, last_paid_at, report_id)
         generator = self.connection.list_all(query_params)
 
         for expense_list in generator:
@@ -38,7 +38,7 @@ class Expenses(Base):
 
 
     @staticmethod
-    def __construct_expenses_query_params(source_account_type: List[str], state: str, updated_at: datetime, settled_at: datetime, approved_at:datetime, last_paid_at: datetime) -> dict:
+    def __construct_expenses_query_params(source_account_type: List[str], state: str, updated_at: datetime, settled_at: datetime, approved_at:datetime, last_paid_at: datetime, report_id: str) -> dict:
         """
         Construct expenses query params.
         :param source_account_type: Source account types.
@@ -46,16 +46,16 @@ class Expenses(Base):
         :param updated_at: Updated at.
         :return: Query params.
         """
-
-        state = [state]
-        if state[0] == 'PAYMENT_PROCESSING' and (updated_at is not None or settled_at is not None):
-            state.append('PAID')
-            state = 'in.{}'.format(tuple(state)).replace("'", '"')
-        elif state[0] == 'APPROVED' and (updated_at is not None or settled_at is not None or approved_at is not None):
-            state.extend(['PAYMENT_PROCESSING', 'PAID'])
-            state = 'in.{}'.format(tuple(state)).replace("'", '"')
-        else:
-            state = 'eq.{}'.format(state[0])
+        if state:
+            state = [state]
+            if state[0] == 'PAYMENT_PROCESSING' and (updated_at is not None or settled_at is not None):
+                state.append('PAID')
+                state = 'in.{}'.format(tuple(state)).replace("'", '"')
+            elif state[0] == 'APPROVED' and (updated_at is not None or settled_at is not None or approved_at is not None):
+                state.extend(['PAYMENT_PROCESSING', 'PAID'])
+                state = 'in.{}'.format(tuple(state)).replace("'", '"')
+            else:
+                state = 'eq.{}'.format(state[0])
 
         source_account_type_filter = ['PERSONAL_CASH_ACCOUNT']
         if len(source_account_type) == 1:
@@ -66,9 +66,11 @@ class Expenses(Base):
 
         query_params = {
             'order': 'updated_at.desc',
-            'source_account->type': source_account_type_filter,
-            'state': state
+            'source_account->type': source_account_type_filter
         }
+
+        if state:
+            query_params['state'] = state
 
         if updated_at:
             updated_at = 'gte.{}'.format(datetime.strftime(updated_at, '%Y-%m-%dT%H:%M:%S.000Z'))
@@ -85,6 +87,9 @@ class Expenses(Base):
         if approved_at:
             approved_at = 'gte.{}'.format(datetime.strftime(approved_at, '%Y-%m-%dT%H:%M:%S.000Z'))
             query_params['report->last_approved_at'] = approved_at
+
+        if report_id:
+            query_params['report_id'] = 'eq.{}'.format(report_id)
 
         return query_params
 
