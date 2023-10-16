@@ -28,7 +28,7 @@ class ExpenseCustomFields(Base):
                                 'custom_field_id': row['id'],
                                 'placeholder': row['placeholder'],
                                 'is_mandatory': row['is_mandatory'],
-                                'is_dependent': True
+                                'is_dependent': False
                             }
                         })
                         count = count + 1
