@@ -27,18 +27,20 @@ class ExpenseCustomFields(Base):
                             'detail': {
                                 'custom_field_id': row['id'],
                                 'placeholder': row['placeholder'],
-                                'is_mandatory': row['is_mandatory']
+                                'is_mandatory': row['is_mandatory'],
+                                'is_dependent': True
                             }
                         })
                         count = count + 1
                     self.attribute_type = attribute_type
                     self.bulk_create_or_update_expense_attributes(attributes, True)
 
-    def list_all(self):
+    def list_all(self, query_params=None):
         """
         List all the custom fields
         """
-        query_params = {'order': 'updated_at.desc', 'is_custom': 'eq.true', 'is_enabled': 'eq.true'}
+        if not query_params:
+            query_params = {'order': 'updated_at.desc', 'is_custom': 'eq.true', 'is_enabled': 'eq.true'}
         generator = self.connection.list_all(query_params)
         custom_fields = []
 

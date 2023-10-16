@@ -67,7 +67,10 @@ class PlatformConnector:
         self.merchants.set_connection(self.connection.v1beta.admin.expense_fields)
         self.files.set_connection(self.connection.v1beta.admin.files)
         self.departments.set_connection(self.connection.v1beta.admin.departments)
-        self.dependent_fields.set_connection(self.connection.v1beta.admin.expense_fields)
+        self.dependent_fields.set_connection(
+            self.connection.v1beta.admin.dependent_field_values,
+            self.connection.v1beta.admin.expense_fields
+        )
 
     def set_workspace_id(self):
         """Set workspace ID for Fyle Platform APIs."""
