@@ -5,7 +5,7 @@ with open('../README.md', 'r', encoding='utf-8') as f:
 
 setuptools.setup(
     name='fyle-integrations-platform-connector',
-    version='1.35.0',
+    version='1.36.0',
     author='Shwetabh Kumar',
     author_email='shwetabh.kumar@fyle.in',
     description='A common platform connector for all the Fyle Integrations to interact with Fyle Platform APIs',
@@ -17,7 +17,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     install_requires=[
         'fyle_accounting_mappings>=1.25.0',
-        'fyle>=v0.34.0'
+        'fyle>=v0.35.0'
     ],
     classifiers=[
         'Topic :: Internet :: WWW/HTTP',
