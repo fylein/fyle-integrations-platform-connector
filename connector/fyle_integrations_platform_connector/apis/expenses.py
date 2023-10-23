@@ -82,11 +82,11 @@ class Expenses(Base):
 
         if last_paid_at:
             last_paid_at = 'gte.{}'.format(datetime.strftime(last_paid_at, '%Y-%m-%dT%H:%M:%S.000Z'))
-            query_params['report->last_paid_at'] = last_paid_at
+            query_params['report_last_paid_at'] = last_paid_at
         
         if approved_at:
             approved_at = 'gte.{}'.format(datetime.strftime(approved_at, '%Y-%m-%dT%H:%M:%S.000Z'))
-            query_params['report->last_approved_at'] = approved_at
+            query_params['report_last_approved_at'] = approved_at
 
         if report_id:
             query_params['report_id'] = 'eq.{}'.format(report_id)
