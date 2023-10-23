@@ -115,9 +115,14 @@ class Base:
 
     def attribute_is_valid(self, attribute):
         """
-        Validate whether attribute is from the same org or not
+        Validate whether attribute is from the same org or not.
         """
-        return attribute['org_id'] == self.workspace.fyle_org_id
+        if hasattr(self.workspace, 'fyle_org_id'):
+            return attribute['org_id'] == self.workspace.fyle_org_id
+
+        elif hasattr(self.workspace, 'org_id'):
+            return attribute['org_id'] == self.workspace.org_id
+
 
     def sync(self, sync_after: datetime = None) -> None:
         """
