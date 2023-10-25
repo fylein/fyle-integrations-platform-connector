@@ -90,9 +90,12 @@ class PlatformConnector:
         self.departments.set_workspace_id(self.workspace_id)
         self.dependent_fields.set_workspace_id(self.workspace_id)
 
-    def import_fyle_dimensions(self, import_taxes: bool = False):
+    def import_fyle_dimensions(self, import_taxes: bool = False, import_dependent_fields: bool = False):
         """Import Fyle Platform dimension."""
-        apis = ['employees', 'categories', 'projects', 'cost_centers', 'expense_custom_fields', 'corporate_cards', 'dependent_fields']
+        apis = ['employees', 'categories', 'projects', 'cost_centers', 'expense_custom_fields', 'corporate_cards']
+
+        if import_dependent_fields:
+            apis.append('dependent_fields')
 
         if import_taxes:
             apis.append('tax_groups')
