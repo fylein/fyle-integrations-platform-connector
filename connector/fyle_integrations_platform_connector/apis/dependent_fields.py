@@ -78,22 +78,26 @@ class DependentFields(Base):
                 count = 1
                 attribute_type = row['field_name'].upper().replace(' ', '_')
 
+                options_list = []
                 for options in options_generator:
                     for option in options['data']:
-                        attributes.append({
-                            'attribute_type': attribute_type,
-                            'display_name': row['field_name'],
-                            'value': option['expense_field_value'],
-                            'active': True,
-                            'source_id': 'expense_custom_field.{}.{}'.format(row['field_name'].lower(), count),
-                            'detail': {
-                                'custom_field_id': row['id'],
-                                'placeholder': row['placeholder'],
-                                'is_mandatory': row['is_mandatory'],
-                                'is_dependent': True
-                            }
-                        })
-                        count = count + 1
+                        if option['expense_field_value'] not in options_list:
+                            options_list.append(option['expense_field_value'])
+
+                            attributes.append({
+                                'attribute_type': attribute_type,
+                                'display_name': row['field_name'],
+                                'value': option['expense_field_value'],
+                                'active': True,
+                                'source_id': 'expense_custom_field.{}.{}'.format(row['field_name'].lower(), count),
+                                'detail': {
+                                    'custom_field_id': row['id'],
+                                    'placeholder': row['placeholder'],
+                                    'is_mandatory': row['is_mandatory'],
+                                    'is_dependent': True
+                                }
+                            })
+                            count = count + 1
 
                 self.attribute_type = attribute_type
                 self.bulk_create_or_update_expense_attributes(attributes, True)
