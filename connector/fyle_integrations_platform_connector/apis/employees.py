@@ -5,7 +5,7 @@ class Employees(Base):
     """Class for Employees APIs."""
 
     def __init__(self):
-        Base.__init__(self, attribute_type='EMPLOYEE', query_params={'is_enabled': 'eq.true', 'has_accepted_invite': 'eq.true'})
+        Base.__init__(self, attribute_type='EMPLOYEE', query_params={'is_enabled': 'eq.true'})
 
     def get_employee_by_email(self, email: str):
         """
