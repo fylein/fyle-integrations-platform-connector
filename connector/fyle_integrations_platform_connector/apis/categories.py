@@ -22,10 +22,9 @@ class Categories(Base):
             
             for items in generator:
                 category_attributes = []
+                expense_attributes_deletion_cache = ExpenseAttributesDeletionCache.objects.get(workspace_id=self.workspace_id)
                 for category in items['data']:
-                    expense_attributes_deletion_cache = ExpenseAttributesDeletionCache.objects.get(workspace_id=self.workspace_id)
                     expense_attributes_deletion_cache.category_ids.append(category['id'])
-                    expense_attributes_deletion_cache.save()
                     if self.attribute_is_valid(category):
                         if category['sub_category'] and category['name'] != category['sub_category']:
                             category['name'] = '{0} / {1}'.format(category['name'], category['sub_category'])
@@ -39,6 +38,7 @@ class Categories(Base):
                             'detail': None
                         })
 
+                expense_attributes_deletion_cache.save()
                 self.bulk_create_or_update_expense_attributes(category_attributes, True)
 
             self.bulk_update_deleted_expense_attributes()

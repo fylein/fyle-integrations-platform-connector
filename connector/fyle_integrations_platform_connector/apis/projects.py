@@ -23,10 +23,10 @@ class Projects(Base):
 
             for items in generator:
                 project_attributes = []
+                expense_attributes_deletion_cache = ExpenseAttributesDeletionCache.objects.get(workspace_id=self.workspace_id)
                 for project in items['data']:
-                    expense_attributes_deletion_cache = ExpenseAttributesDeletionCache.objects.get(workspace_id=self.workspace_id)
                     expense_attributes_deletion_cache.project_ids.append(project['id'])
-                    expense_attributes_deletion_cache.save()
+                    
                     if self.attribute_is_valid(project):
                         if project['sub_project']:
                             project['name'] = '{0} / {1}'.format(project['name'], project['sub_project'])
@@ -39,6 +39,7 @@ class Projects(Base):
                             'source_id': project['id']
                         })
 
+                expense_attributes_deletion_cache.save()
                 self.bulk_create_or_update_expense_attributes(project_attributes, True)
             
             self.bulk_update_deleted_expense_attributes()
