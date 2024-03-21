@@ -45,6 +45,11 @@ class Base:
         Constructs the query params for the API call.
         :return: dict
         """
+        if self.attribute_type in ['CATEGORY', 'PROJECT']:
+            params = {'order': 'updated_at.desc'}
+            params.update(self.query_params)
+            return params
+
         if sync_after:
             updated_at = self.format_date(sync_after)
         else:
@@ -92,6 +97,12 @@ class Base:
         ExpenseAttribute.bulk_create_or_update_expense_attributes(
             attributes, self.attribute_type, self.workspace_id, update_existing
         )
+    
+    def bulk_update_deleted_expense_attributes(self) -> None:
+        """
+        Bulk updates the deleted expense attributes.
+        """
+        ExpenseAttribute.bulk_update_deleted_expense_attributes(self.attribute_type, self.workspace_id)
 
     def __construct_expense_attribute_objects(self, generator) -> List[dict]:
         """
