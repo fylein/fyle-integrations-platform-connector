@@ -75,6 +75,13 @@ class Base:
         query_params = self.construct_query_params(sync_after)
 
         return self.connection.list_all(query_params)
+    
+    def get_count(self):
+        """
+        Get count of attributes
+        """
+        params = {'order': 'updated_at.desc', 'limit': 1, 'offset': 0, 'is_enabled': 'eq.true'}
+        return self.connection.list(params)['count']
 
     def post_bulk(self, payload: List[Dict]):
         """
