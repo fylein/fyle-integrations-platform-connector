@@ -28,7 +28,7 @@ class Merchants(Base):
                 merchants['options'] = payload
             else:
                 merchants['options'].extend(payload)
-                merchants['options'] = list(set(merchants['options']))
+            merchants['options'] = list(set(merchants['options']))
             merchant_payload = {
                 'id': merchants['id'],
                 'field_name': merchants['field_name'],
