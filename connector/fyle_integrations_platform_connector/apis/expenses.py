@@ -169,7 +169,6 @@ class Expenses(Base):
                     'currency': expense['currency'],
                     'foreign_amount': expense['foreign_amount'],
                     'foreign_currency': expense['foreign_currency'],
-                    'settlement_id': expense['report']['settlement_id'] if expense['report'] else None,
                     'reimbursable': expense['is_reimbursable'],
                     'billable': expense['is_billable'],
                     'state': expense['state'],
