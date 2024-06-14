@@ -12,6 +12,7 @@ from .files import Files
 from .departments import Departments
 from .dependent_fields import DependentFields
 from .subscriptions import Subscriptions
+from .reports import Reports
 
 __all__ = [
     'Expenses',
@@ -27,5 +28,6 @@ __all__ = [
     'Files',
     'Departments',
     'DependentFields',
-    'Subscriptions'
+    'Subscriptions',
+    'Reports'
 ]

@@ -6,7 +6,7 @@ from fyle.platform.exceptions import InvalidTokenError
 
 from apps.workspaces.models import FyleCredential
 from .apis import Expenses, Employees, Categories, Projects, CostCenters, ExpenseCustomFields, CorporateCards, \
-    Reimbursements, TaxGroups, Merchants, Files, DependentFields, Departments, Subscriptions
+    Reimbursements, TaxGroups, Merchants, Files, DependentFields, Departments, Subscriptions, Reports
 
 logger = logging.getLogger(__name__)
 logger.level = logging.INFO
@@ -50,6 +50,7 @@ class PlatformConnector:
         self.departments = Departments()
         self.dependent_fields = DependentFields()
         self.subscriptions = Subscriptions()
+        self.reports = Reports()
 
         self.set_connection()
         self.set_workspace_id()
@@ -73,6 +74,7 @@ class PlatformConnector:
             self.connection.v1beta.admin.expense_fields
         )
         self.subscriptions.set_connection(self.connection.v1beta.admin.subscriptions)
+        self.reports.set_connection(self.connection.v1beta.admin.reports)
 
     def set_workspace_id(self):
         """Set workspace ID for Fyle Platform APIs."""
@@ -89,6 +91,7 @@ class PlatformConnector:
         self.files.set_workspace_id(self.workspace_id)
         self.departments.set_workspace_id(self.workspace_id)
         self.dependent_fields.set_workspace_id(self.workspace_id)
+        self.reports.set_workspace_id(self.workspace_id)
 
     def import_fyle_dimensions(self, import_taxes: bool = False, import_dependent_fields: bool = False, is_export: bool = False):
         """Import Fyle Platform dimension."""
