@@ -219,3 +219,10 @@ class Expenses(Base):
             'data': data
         }
         return self.connection.post_bulk_accounting_export_summary(payload)
+
+    def construct_expense_object(self, data: List[Dict], workspace_id: int):
+        """
+        Convert the fyle expenses to the integration expenses schema
+        """
+        self.set_workspace_id(workspace_id=workspace_id)
+        return self.__construct_expenses_objects(data)
