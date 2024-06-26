@@ -150,6 +150,7 @@ class Expenses(Base):
             
             matched_transaction = expense['matched_corporate_card_transactions'][0] if expense['matched_corporate_card_transactions'] else None
             posted_at = matched_transaction['posted_at'] if matched_transaction and 'posted_at' in matched_transaction else None
+            matched_corporate_card_transaction_ids = expense['matched_corporate_card_transactions']
             if self.attribute_is_valid(expense):
                 objects.append({
                     'id': expense['id'],
@@ -176,6 +177,7 @@ class Expenses(Base):
                     'cost_center': expense['cost_center']['name'] if expense['cost_center'] else None,
                     'corporate_card_id': expense['matched_corporate_card_transactions'][0]['corporate_card_id'] \
                         if expense['matched_corporate_card_transactions'] else None,
+                    'bank_transaction_id': matched_corporate_card_transaction_ids[0],
                     'purpose': expense['purpose'],
                     'report_id': expense['report_id'],
                     'report_title': expense['report']['title'],
