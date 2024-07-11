@@ -161,7 +161,7 @@ class Expenses(Base):
                     'project_id': expense['project']['id'] if expense['project'] else None,
                     'expense_number': expense['seq_num'],
                     'org_id': expense['org_id'],
-                    'claim_number': expense['report']['seq_num'] if expense['report'] and 'report' in expense else None,
+                    'claim_number': expense['report']['seq_num'] if 'report' in expense and expense['report'] else None,
                     'amount': expense['amount'],
                     'tax_amount': expense['tax_amount'],
                     'tax_group_id': expense['tax_group_id'],
@@ -179,17 +179,17 @@ class Expenses(Base):
                     'bank_transaction_id': matched_transaction['id'] if matched_transaction else None,
                     'purpose': expense['purpose'],
                     'report_id': expense['report_id'],
-                    'report_title': expense['report']['title'] if expense['report'] and 'report' in expense else None,
+                    'report_title': expense['report']['title'] if 'report' in expense and expense['report'] and 'title' in expense['report'] else None,
                     'file_ids': expense['file_ids'],
                     'spent_at': self.__format_date(expense['spent_at']),
-                    'approved_at': self.__format_date(expense['report']['last_approved_at']) if expense['report'] and 'report' in expense else None,
+                    'approved_at': self.__format_date(expense['report']['last_approved_at']) if 'report' in expense and expense['report'] else None,
                     'posted_at': self.__format_date(posted_at) if posted_at else None,
                     'expense_created_at': expense['created_at'],
                     'expense_updated_at': expense['updated_at'],
                     'source_account_type': expense['source_account']['type'],
                     'verified_at': self.__format_date(expense['last_verified_at']),
                     'custom_properties': custom_properties,
-                    'payment_number': expense['report']['reimbursement_seq_num'] if 'reimbursement_seq_num' in expense['report'] and expense['report'] and 'report' in expense and \
+                    'payment_number': expense['report']['reimbursement_seq_num'] if 'report' in expense and expense['report'] and 'reimbursement_seq_num' in expense['report'] and \
                         expense['report']['reimbursement_seq_num'] else None
                 })
 
