@@ -1,7 +1,7 @@
-from apps.workspaces.models import Workspace
 from .base import Base
 from typing import List
 from fyle_accounting_mappings.models import ExpenseAttribute
+
 
 class Merchants(Base):
     """
@@ -14,21 +14,24 @@ class Merchants(Base):
         generator = self.get_all_generator()
         for items in generator:
             merchants = items['data'][0]
-        
+
         return merchants
 
-    def post(self, payload: List[str], skip_existing_merchants: bool = False):
+    def post(self, payload: List[str], skip_existing_merchants: bool = False, delete_merchants: bool = False):
         """
-        Post data to Fyle 
+        Post data to Fyle
         """
         generator = self.get_all_generator()
         for items in generator:
             merchants = items['data'][0]
-            if skip_existing_merchants:
-                merchants['options'] = payload
+            if delete_merchants:
+                merchants['options'] = list(set(merchants['options']) - set(payload))
             else:
-                merchants['options'].extend(payload)
-            merchants['options'] = list(set(merchants['options']))
+                if skip_existing_merchants:
+                    merchants['options'] = payload
+                else:
+                    merchants['options'].extend(payload)
+                merchants['options'] = list(set(merchants['options']))
             merchant_payload = {
                 'id': merchants['id'],
                 'field_name': merchants['field_name'],
@@ -45,23 +48,22 @@ class Merchants(Base):
 
         return self.connection.post({'data': merchant_payload})
 
-
     def sync(self):
         """
         Syncs the latest API data to DB.
         """
         generator = self.get_all_generator()
         for items in generator:
-            merchants=items['data'][0]
+            merchants = items['data'][0]
             existing_merchants = ExpenseAttribute.objects.filter(
                 attribute_type='MERCHANT', workspace_id=self.workspace_id)
             delete_merchant_ids = []
 
-            if(existing_merchants):
+            if (existing_merchants):
                 for existing_merchant in existing_merchants:
                     if existing_merchant.value not in merchants['options']:
                         delete_merchant_ids.append(existing_merchant.id)
-                    
+
                 ExpenseAttribute.objects.filter(id__in=delete_merchant_ids).delete()
 
             merchant_attributes = []
