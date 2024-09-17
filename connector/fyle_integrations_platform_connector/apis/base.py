@@ -1,9 +1,13 @@
+import logging
 from datetime import datetime
 from typing import Dict, List
 
 from apps.workspaces.models import Workspace
 
 from fyle_accounting_mappings.models import ExpenseAttribute
+
+logger = logging.getLogger(__name__)
+logger.level = logging.INFO
 
 
 class Base:
@@ -87,8 +91,9 @@ class Base:
         """
         Post data to Fyle in Bulk
         """
+        logger.info("Posting bulk payload for workspace_id: %s with: %s", self.workspace_id, payload)
         return self.connection.post_bulk({'data': payload})
-    
+
     def post(self, payload: Dict):
         """
         Post date to Fyle
