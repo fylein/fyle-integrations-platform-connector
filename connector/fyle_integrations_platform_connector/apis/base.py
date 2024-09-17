@@ -98,6 +98,7 @@ class Base:
         """
         Post date to Fyle
         """
+        logger.info("Posting payload for workspace_id: %s with: %s", self.workspace_id, payload)
         return self.connection.post({'data': payload})
 
     def bulk_create_or_update_expense_attributes(self, attributes: List[dict], update_existing: bool = False) -> None:
