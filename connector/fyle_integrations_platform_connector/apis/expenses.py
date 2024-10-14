@@ -176,6 +176,8 @@ class Expenses(Base):
                     'cost_center': expense['cost_center']['name'] if expense['cost_center'] else None,
                     'corporate_card_id': expense['matched_corporate_card_transactions'][0]['corporate_card_id'] \
                         if expense['matched_corporate_card_transactions'] else None,
+                    'masked_corporate_card_number': expense['matched_corporate_card_transactions'][0]['masked_corporate_card_number'] \
+                        if expense['matched_corporate_card_transactions'] else None,
                     'bank_transaction_id': matched_transaction['id'] if matched_transaction else None,
                     'purpose': expense['purpose'],
                     'report_id': expense['report_id'],
