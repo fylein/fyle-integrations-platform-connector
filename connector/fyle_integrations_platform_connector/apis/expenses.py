@@ -186,6 +186,7 @@ class Expenses(Base):
                     'spent_at': self.__format_date(expense['spent_at']),
                     'approved_at': self.__format_date(expense['report']['last_approved_at']) if 'report' in expense and expense['report'] else None,
                     'posted_at': self.__format_date(posted_at) if posted_at else None,
+                    'is_posted_at_null': False if posted_at else True,
                     'expense_created_at': expense['created_at'],
                     'expense_updated_at': expense['updated_at'],
                     'source_account_type': expense['source_account']['type'],
