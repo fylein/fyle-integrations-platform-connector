@@ -48,56 +48,62 @@ class DependentFields(Base):
         return self.connection.bulk_post_dependent_expense_field_values(payload)
 
 
-    def sync(self):
+    def sync(self, skip_dependent_field_ids: list):
         """
         Syncs the latest API data to DB.
+        :param skip_dependent_field_ids: List of dependent field IDs to skip
         """
+        params = {
+            'order': 'updated_at.desc',
+            'is_enabled': 'eq.true',
+            'is_custom': 'eq.true',
+            'type': 'eq.DEPENDENT_SELECT'
+        }
+
+        if skip_dependent_field_ids:
+            params['id'] = f'not_in.({",".join(map(str, skip_dependent_field_ids))})'
+
         generator = self.expense_fields_connection.list_all(
-            query_params={
-                'order': 'updated_at.desc',
-                'is_enabled': 'eq.true',
-                'is_custom': 'eq.true',
-                'type': 'eq.DEPENDENT_SELECT'
-            }
+            query_params=params
         )
 
         for items in generator:
             for row in items['data']:
                 parent_field_id = row['parent_field_id']
                 id = row['id']
+                if parent_field_id:
+                    options_generator = self.connection.list_all(
+                        {
+                            'expense_field_id': f'eq.{id}',
+                            'parent_expense_field_id': f'eq.{parent_field_id}',
+                            'order': 'id.desc'
+                        }
+                    )
 
-                options_generator = self.connection.list_all(
-                    {
-                        'expense_field_id': f'eq.{id}',
-                        'parent_expense_field_id': f'eq.{parent_field_id}',
-                        'order': 'id.desc'
-                    }
-                )
+                    attributes = []
+                    count = 1
+                    attribute_type = row['field_name'].upper().replace(' ', '_')
 
-                attributes = []
-                count = 1
-                attribute_type = row['field_name'].upper().replace(' ', '_')
+                    options_list = []
+                    for options in options_generator:
+                        for option in options['data']:
+                            if option['expense_field_value'] not in options_list:
+                                options_list.append(option['expense_field_value'])
 
-                options_list = []
-                for options in options_generator:
-                    for option in options['data']:
-                        if option['expense_field_value'] not in options_list:
-                            options_list.append(option['expense_field_value'])
+                                attributes.append({
+                                    'attribute_type': attribute_type,
+                                    'display_name': row['field_name'],
+                                    'value': option['expense_field_value'],
+                                    'active': True,
+                                    'source_id': 'expense_custom_field.{}.{}'.format(row['field_name'].lower(), count),
+                                    'detail': {
+                                        'custom_field_id': row['id'],
+                                        'placeholder': row['placeholder'],
+                                        'is_mandatory': row['is_mandatory'],
+                                        'is_dependent': True
+                                    }
+                                })
+                                count = count + 1
 
-                            attributes.append({
-                                'attribute_type': attribute_type,
-                                'display_name': row['field_name'],
-                                'value': option['expense_field_value'],
-                                'active': True,
-                                'source_id': 'expense_custom_field.{}.{}'.format(row['field_name'].lower(), count),
-                                'detail': {
-                                    'custom_field_id': row['id'],
-                                    'placeholder': row['placeholder'],
-                                    'is_mandatory': row['is_mandatory'],
-                                    'is_dependent': True
-                                }
-                            })
-                            count = count + 1
-
-                self.attribute_type = attribute_type
-                self.bulk_create_or_update_expense_attributes(attributes, True)
+                    self.attribute_type = attribute_type
+                    self.bulk_create_or_update_expense_attributes(attributes, True)
