@@ -93,7 +93,7 @@ class PlatformConnector:
         self.dependent_fields.set_workspace_id(self.workspace_id)
         self.reports.set_workspace_id(self.workspace_id)
 
-    def import_fyle_dimensions(self, import_taxes: bool = False, import_dependent_fields: bool = False, is_export: bool = False):
+    def import_fyle_dimensions(self, import_taxes: bool = False, import_dependent_fields: bool = False, is_export: bool = False, skip_dependent_field_ids: list = []):
         """Import Fyle Platform dimension."""
         apis = ['employees', 'categories', 'projects', 'cost_centers', 'expense_custom_fields', 'corporate_cards']
 
@@ -109,6 +109,9 @@ class PlatformConnector:
         for api in apis:
             dimension = getattr(self, api)
             try:
-                dimension.sync()
+                if api == 'dependent_fields':
+                    dimension.sync(skip_dependent_field_ids)
+                else:
+                    dimension.sync()
             except Exception as e:
                 logger.exception(e)
