@@ -10,7 +10,7 @@ class Expenses(Base):
     """Class for Expenses APIs."""
 
     def get(self, source_account_type: List[str], state: str=None, last_synced_at: datetime=None,
-        settled_at: datetime=None, approved_at: datetime=None, filter_credit_expenses: bool=False, last_paid_at=None, report_id: str=None) -> List[dict]:
+        settled_at: datetime=None, approved_at: datetime=None, filter_credit_expenses: bool=False, last_paid_at=None, report_id: str=None, import_states: List[str] = []) -> List[dict]:
         """
         Get expenses.
 
@@ -25,7 +25,7 @@ class Expenses(Base):
         """
         all_expenses = []
 
-        query_params = self.__construct_expenses_query_params(source_account_type, state, last_synced_at, settled_at, approved_at, last_paid_at, report_id)
+        query_params = self.__construct_expenses_query_params(source_account_type, state, last_synced_at, settled_at, approved_at, last_paid_at, report_id, import_states)
         generator = self.connection.list_all(query_params)
 
         for expense_list in generator:
@@ -38,7 +38,7 @@ class Expenses(Base):
 
 
     @staticmethod
-    def __construct_expenses_query_params(source_account_type: List[str], state: str, updated_at: datetime, settled_at: datetime, approved_at:datetime, last_paid_at: datetime, report_id: str) -> dict:
+    def __construct_expenses_query_params(source_account_type: List[str], state: str, updated_at: datetime, settled_at: datetime, approved_at:datetime, last_paid_at: datetime, report_id: str, import_states: List[str]) -> dict:
         """
         Construct expenses query params.
         :param source_account_type: Source account types.
@@ -56,6 +56,11 @@ class Expenses(Base):
                 state = 'in.{}'.format(tuple(state)).replace("'", '"')
             else:
                 state = 'eq.{}'.format(state[0])
+        elif import_states:
+            if len(import_states) > 1:
+                state = 'in.{}'.format(tuple(import_states)).replace("'", '"')
+            else:
+                state = 'eq.{}'.format(import_states[0])
 
         source_account_type_filter = ['PERSONAL_CASH_ACCOUNT']
         if len(source_account_type) == 1:
