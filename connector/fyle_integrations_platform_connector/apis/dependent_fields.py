@@ -24,7 +24,7 @@ class DependentFields(Base):
             'limit': 1,
             'order': 'updated_at.desc',
             'offset': 0,
-            'field_name': 'eq.Project',
+            'column_name': 'eq.project_id',
             'is_custom': 'eq.False'
         }
 
