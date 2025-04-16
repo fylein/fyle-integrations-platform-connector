@@ -21,7 +21,7 @@ class PlatformConnector:
     """
 
     def __init__(self, fyle_credentials: FyleCredential):
-        server_url = '{}/platform/v1beta'.format(fyle_credentials.cluster_domain)
+        server_url = '{}/platform/v1'.format(fyle_credentials.cluster_domain)
         self.workspace_id = fyle_credentials.workspace_id
         try:
             self.connection = Platform(
@@ -57,24 +57,24 @@ class PlatformConnector:
 
     def set_connection(self):
         """Set connection with Fyle Platform APIs."""
-        self.expenses.set_connection(self.connection.v1beta.admin.expenses)
-        self.employees.set_connection(self.connection.v1beta.admin.employees)
-        self.categories.set_connection(self.connection.v1beta.admin.categories)
-        self.projects.set_connection(self.connection.v1beta.admin.projects)
-        self.cost_centers.set_connection(self.connection.v1beta.admin.cost_centers)
-        self.expense_custom_fields.set_connection(self.connection.v1beta.admin.expense_fields)
-        self.corporate_cards.set_connection(self.connection.v1beta.admin.corporate_cards)
-        self.reimbursements.set_connection(self.connection.v1beta.admin.reimbursements)
-        self.tax_groups.set_connection(self.connection.v1beta.admin.tax_groups)
-        self.merchants.set_connection(self.connection.v1beta.admin.expense_fields)
-        self.files.set_connection(self.connection.v1beta.admin.files)
-        self.departments.set_connection(self.connection.v1beta.admin.departments)
+        self.expenses.set_connection(self.connection.v1.admin.expenses)
+        self.employees.set_connection(self.connection.v1.admin.employees)
+        self.categories.set_connection(self.connection.v1.admin.categories)
+        self.projects.set_connection(self.connection.v1.admin.projects)
+        self.cost_centers.set_connection(self.connection.v1.admin.cost_centers)
+        self.expense_custom_fields.set_connection(self.connection.v1.admin.expense_fields)
+        self.corporate_cards.set_connection(self.connection.v1.admin.corporate_cards)
+        self.reimbursements.set_connection(self.connection.v1.admin.reimbursements)
+        self.tax_groups.set_connection(self.connection.v1.admin.tax_groups)
+        self.merchants.set_connection(self.connection.v1.admin.expense_fields)
+        self.files.set_connection(self.connection.v1.admin.files)
+        self.departments.set_connection(self.connection.v1.admin.departments)
         self.dependent_fields.set_connection(
-            self.connection.v1beta.admin.dependent_expense_field_values,
-            self.connection.v1beta.admin.expense_fields
+            self.connection.v1.admin.dependent_expense_field_values,
+            self.connection.v1.admin.expense_fields
         )
-        self.subscriptions.set_connection(self.connection.v1beta.admin.subscriptions)
-        self.reports.set_connection(self.connection.v1beta.admin.reports)
+        self.subscriptions.set_connection(self.connection.v1.admin.subscriptions)
+        self.reports.set_connection(self.connection.v1.admin.reports)
 
     def set_workspace_id(self):
         """Set workspace ID for Fyle Platform APIs."""
