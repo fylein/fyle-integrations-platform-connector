@@ -20,15 +20,12 @@ class Base:
         self.workspace_id = None
         self.workspace = None
 
-
     def set_connection(self, connection):
         self.connection = connection
-
 
     def set_workspace_id(self, workspace_id):
         self.workspace_id = workspace_id
         self.workspace = Workspace.objects.filter(id=self.workspace_id).first()
-
 
     def format_date(self, last_synced_at: datetime) -> str:
         """
@@ -36,20 +33,18 @@ class Base:
         """
         return 'gte.{}'.format(datetime.strftime(last_synced_at, '%Y-%m-%dT%H:%M:%S.000Z'))
 
-
     def __get_last_synced_at(self):
         """
         Returns the last time the API was synced.
         """
         return ExpenseAttribute.get_last_synced_at(self.attribute_type, self.workspace_id)
 
-
     def construct_query_params(self, sync_after: datetime = None) -> dict:
         """
         Constructs the query params for the API call.
         :return: dict
         """
-        if self.attribute_type in ['CATEGORY', 'PROJECT']:
+        if self.attribute_type in ['CATEGORY', 'PROJECT', 'COST_CENTER']:
             params = {'order': 'updated_at.desc'}
             params.update(self.query_params)
             return params
@@ -70,7 +65,6 @@ class Base:
 
         return params
 
-
     def get_all_generator(self, sync_after: datetime = None):
         """
         Returns the generator for retrieving data from the API.
@@ -79,7 +73,7 @@ class Base:
         query_params = self.construct_query_params(sync_after)
 
         return self.connection.list_all(query_params)
-    
+
     def get_count(self):
         """
         Get count of attributes
@@ -110,7 +104,7 @@ class Base:
         ExpenseAttribute.bulk_create_or_update_expense_attributes(
             attributes, self.attribute_type, self.workspace_id, update_existing
         )
-    
+
     def bulk_update_deleted_expense_attributes(self) -> None:
         """
         Bulk updates the deleted expense attributes.
@@ -146,7 +140,6 @@ class Base:
 
         elif hasattr(self.workspace, 'org_id'):
             return attribute['org_id'] == self.workspace.org_id
-
 
     def sync(self, sync_after: datetime = None) -> None:
         """
