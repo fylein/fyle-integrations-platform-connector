@@ -1,6 +1,11 @@
+import logging
+
 from .base import Base
 from typing import List
-from fyle_accounting_mappings.models import ExpenseAttribute
+from fyle_accounting_mappings.models import ExpenseAttribute, ExpenseAttributesDeletionCache
+
+logger = logging.getLogger(__name__)
+logger.level = logging.INFO
 
 
 class Merchants(Base):
@@ -52,29 +57,47 @@ class Merchants(Base):
         """
         Syncs the latest API data to DB.
         """
+        try:
+            generator = self.get_all_generator()
+            for items in generator:
+                merchants = items['data'][0]
+                existing_merchants = ExpenseAttribute.objects.filter(
+                    attribute_type='MERCHANT', workspace_id=self.workspace_id)
+                delete_merchant_ids = []
+
+                if (existing_merchants):
+                    for existing_merchant in existing_merchants:
+                        if existing_merchant.value not in merchants['options']:
+                            delete_merchant_ids.append(existing_merchant.id)
+
+                    ExpenseAttributesDeletionCache.objects.filter(workspace_id=self.workspace_id).update(merchant_ids=delete_merchant_ids)
+
+                merchant_attributes = []
+
+                for option in merchants['options']:
+                    merchant_attributes.append({
+                        'attribute_type': 'MERCHANT',
+                        'display_name': 'Merchant',
+                        'value': option,
+                        'active': True,
+                        'source_id': merchants['id'],
+                    })
+
+                self.bulk_create_or_update_expense_attributes(merchant_attributes, True)
+            self.bulk_update_deleted_expense_attributes()
+
+        except Exception as e:
+            logger.exception(e)
+            expense_attributes_deletion_cache = ExpenseAttributesDeletionCache.objects.get(workspace_id=self.workspace_id)
+            expense_attributes_deletion_cache.merchant_ids = []
+            expense_attributes_deletion_cache.save()
+
+    def get_count(self):
+        """
+        Get the count of merchants
+        """
         generator = self.get_all_generator()
         for items in generator:
-            merchants = items['data'][0]
-            existing_merchants = ExpenseAttribute.objects.filter(
-                attribute_type='MERCHANT', workspace_id=self.workspace_id)
-            delete_merchant_ids = []
+            return len(items['data'][0]['options'])
 
-            if (existing_merchants):
-                for existing_merchant in existing_merchants:
-                    if existing_merchant.value not in merchants['options']:
-                        delete_merchant_ids.append(existing_merchant.id)
-
-                ExpenseAttribute.objects.filter(id__in=delete_merchant_ids).delete()
-
-            merchant_attributes = []
-
-            for option in merchants['options']:
-                merchant_attributes.append({
-                    'attribute_type': 'MERCHANT',
-                    'display_name': 'Merchant',
-                    'value': option,
-                    'active': True,
-                    'source_id': merchants['id'],
-                })
-
-            self.bulk_create_or_update_expense_attributes(merchant_attributes, True)
+        return 0
