@@ -61,16 +61,8 @@ class Merchants(Base):
             generator = self.get_all_generator()
             for items in generator:
                 merchants = items['data'][0]
-                existing_merchants = ExpenseAttribute.objects.filter(
-                    attribute_type='MERCHANT', workspace_id=self.workspace_id)
-                active_merchants = []
 
-                if (existing_merchants):
-                    for existing_merchant in existing_merchants:
-                        if existing_merchant.value in merchants['options']:
-                            active_merchants.append(existing_merchant.id)
-
-                    ExpenseAttributesDeletionCache.objects.filter(workspace_id=self.workspace_id).update(merchant_ids=active_merchants)
+                ExpenseAttributesDeletionCache.objects.filter(workspace_id=self.workspace_id).update(merchant_list=merchants['options'])
 
                 merchant_attributes = []
 
