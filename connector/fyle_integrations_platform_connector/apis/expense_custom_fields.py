@@ -59,7 +59,7 @@ class ExpenseCustomFields(Base):
         List all the custom fields
         """
         if not query_params:
-            query_params = {'order': 'updated_at.desc', 'is_custom': 'eq.true', 'is_enabled': 'eq.true', 'field_name': 'eq.{}'.format('Deptcustom')}
+            query_params = {'order': 'updated_at.desc', 'is_custom': 'eq.true', 'is_enabled': 'eq.true'}
         generator = self.connection.list_all(query_params)
         custom_fields = []
 
