@@ -44,7 +44,7 @@ class Base:
         Constructs the query params for the API call.
         :return: dict
         """
-        if self.attribute_type in ['CATEGORY', 'PROJECT']:
+        if self.attribute_type in ['CATEGORY', 'PROJECT', 'COST_CENTER']:
             params = {'order': 'updated_at.desc'}
             params.update(self.query_params)
             return params

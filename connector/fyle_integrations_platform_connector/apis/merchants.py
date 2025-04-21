@@ -63,14 +63,14 @@ class Merchants(Base):
                 merchants = items['data'][0]
                 existing_merchants = ExpenseAttribute.objects.filter(
                     attribute_type='MERCHANT', workspace_id=self.workspace_id)
-                delete_merchant_ids = []
+                active_merchants = []
 
                 if (existing_merchants):
                     for existing_merchant in existing_merchants:
-                        if existing_merchant.value not in merchants['options']:
-                            delete_merchant_ids.append(existing_merchant.id)
+                        if existing_merchant.value in merchants['options']:
+                            active_merchants.append(existing_merchant.id)
 
-                    ExpenseAttributesDeletionCache.objects.filter(workspace_id=self.workspace_id).update(merchant_ids=delete_merchant_ids)
+                    ExpenseAttributesDeletionCache.objects.filter(workspace_id=self.workspace_id).update(merchant_ids=active_merchants)
 
                 merchant_attributes = []
 

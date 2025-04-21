@@ -19,7 +19,7 @@ class CostCenters(Base):
         """
         try:
             expense_attributes_deletion_cache, _ = ExpenseAttributesDeletionCache.objects.get_or_create(workspace_id=self.workspace_id)
-            generator = self.get_all_generator(sync_after=sync_after)
+            generator = self.get_all_generator()
 
             for items in generator:
                 cost_center_attributes = []
