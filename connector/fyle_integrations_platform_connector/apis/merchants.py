@@ -58,11 +58,13 @@ class Merchants(Base):
         Syncs the latest API data to DB.
         """
         try:
+            expense_attributes_deletion_cache, _ = ExpenseAttributesDeletionCache.objects.get_or_create(workspace_id=self.workspace_id)
             generator = self.get_all_generator()
             for items in generator:
                 merchants = items['data'][0]
 
-                ExpenseAttributesDeletionCache.objects.filter(workspace_id=self.workspace_id).update(merchant_list=merchants['options'])
+                expense_attributes_deletion_cache.merchant_list = merchants['options']
+                expense_attributes_deletion_cache.save()
 
                 merchant_attributes = []
 
