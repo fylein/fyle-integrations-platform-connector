@@ -6,7 +6,7 @@ from fyle.platform.exceptions import InvalidTokenError
 
 from apps.workspaces.models import FyleCredential
 from .apis import Expenses, Employees, Categories, Projects, CostCenters, ExpenseCustomFields, CorporateCards, \
-    Reimbursements, TaxGroups, Merchants, Files, DependentFields, Departments, Subscriptions, Reports
+    Reimbursements, TaxGroups, Merchants, Files, DependentFields, Departments, Subscriptions, Reports, CorporateCardTransactions
 
 logger = logging.getLogger(__name__)
 logger.level = logging.INFO
@@ -51,7 +51,7 @@ class PlatformConnector:
         self.dependent_fields = DependentFields()
         self.subscriptions = Subscriptions()
         self.reports = Reports()
-
+        self.corporate_card_transactions = CorporateCardTransactions()
         self.set_connection()
         self.set_workspace_id()
 
@@ -75,7 +75,7 @@ class PlatformConnector:
         )
         self.subscriptions.set_connection(self.connection.v1.admin.subscriptions)
         self.reports.set_connection(self.connection.v1.admin.reports)
-
+        self.corporate_card_transactions.set_connection(self.connection.v1.spender.corporate_card_transactions)
     def set_workspace_id(self):
         """Set workspace ID for Fyle Platform APIs."""
         self.expenses.set_workspace_id(self.workspace_id)
@@ -92,6 +92,7 @@ class PlatformConnector:
         self.departments.set_workspace_id(self.workspace_id)
         self.dependent_fields.set_workspace_id(self.workspace_id)
         self.reports.set_workspace_id(self.workspace_id)
+        self.corporate_card_transactions.set_workspace_id(self.workspace_id)
 
     def import_fyle_dimensions(self, import_taxes: bool = False, import_dependent_fields: bool = False, is_export: bool = False, skip_dependent_field_ids: list = []):
         """Import Fyle Platform dimension."""

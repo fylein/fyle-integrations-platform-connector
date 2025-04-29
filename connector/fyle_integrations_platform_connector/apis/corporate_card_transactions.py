@@ -1,0 +1,15 @@
+from .base import Base
+
+
+class CorporateCardTransactions(Base):
+    """Class for Corporate Card Transactions APIs."""
+
+    def get_transactions(self, transaction_id: int):
+        """
+        Get a transaction by ID
+        """
+        return self.connection.list({
+            'id': 'eq.{}'.format(transaction_id)
+        })['data']
+
+        

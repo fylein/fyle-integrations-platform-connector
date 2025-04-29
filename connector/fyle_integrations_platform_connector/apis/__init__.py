@@ -13,7 +13,7 @@ from .departments import Departments
 from .dependent_fields import DependentFields
 from .subscriptions import Subscriptions
 from .reports import Reports
-
+from .corporate_card_transactions import CorporateCardTransactions
 __all__ = [
     'Expenses',
     'Employees',
@@ -29,5 +29,6 @@ __all__ = [
     'Departments',
     'DependentFields',
     'Subscriptions',
-    'Reports'
+    'Reports',
+    'CorporateCardTransactions'
 ]
