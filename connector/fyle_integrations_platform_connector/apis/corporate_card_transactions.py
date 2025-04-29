@@ -9,7 +9,10 @@ class CorporateCardTransactions(Base):
         Get a transaction by ID
         """
         return self.connection.list({
-            'id': 'eq.{}'.format(transaction_id)
+            'id': 'eq.{}'.format(transaction_id),
+            'offset': 0,
+            'limit': 1,
+            'order': 'updated_at.desc'
         })['data']
 
         
