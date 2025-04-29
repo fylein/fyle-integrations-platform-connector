@@ -4,7 +4,7 @@ from .base import Base
 class CorporateCardTransactions(Base):
     """Class for Corporate Card Transactions APIs."""
 
-    def get_transactions(self, transaction_id: int):
+    def get_transaction_by_id(self, transaction_id: int):
         """
         Get a transaction by ID
         """

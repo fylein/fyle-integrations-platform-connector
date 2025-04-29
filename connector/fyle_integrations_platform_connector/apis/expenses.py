@@ -154,6 +154,10 @@ class Expenses(Base):
                 custom_properties[custom_field['name']] = custom_field['value']
             
             matched_transaction = expense['matched_corporate_card_transactions'][0] if expense['matched_corporate_card_transactions'] else None
+            if not matched_transaction:
+                matched_transaction = self.corporate_card_transactions.get_transaction_by_id(expense['matched_corporate_card_transaction_ids'][0])
+                if matched_transaction:
+                    matched_transaction = matched_transaction[0]
             posted_at = matched_transaction['posted_at'] if matched_transaction and 'posted_at' in matched_transaction else None
             if self.attribute_is_valid(expense):
                 objects.append({

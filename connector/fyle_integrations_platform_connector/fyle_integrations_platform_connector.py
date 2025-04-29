@@ -75,7 +75,8 @@ class PlatformConnector:
         )
         self.subscriptions.set_connection(self.connection.v1.admin.subscriptions)
         self.reports.set_connection(self.connection.v1.admin.reports)
-        self.corporate_card_transactions.set_connection(self.connection.v1.spender.corporate_card_transactions)
+        self.corporate_card_transactions.set_connection(self.connection.v1.admin.corporate_card_transactions)
+
     def set_workspace_id(self):
         """Set workspace ID for Fyle Platform APIs."""
         self.expenses.set_workspace_id(self.workspace_id)
