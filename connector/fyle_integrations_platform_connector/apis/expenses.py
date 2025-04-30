@@ -1,9 +1,13 @@
 from typing import List, Dict
 from datetime import datetime
-
+import logging
 from dateutil import parser
 
 from .base import Base
+
+
+logger = logging.getLogger(__name__)
+logger.level = logging.INFO
 
 
 class Expenses(Base):
@@ -157,6 +161,7 @@ class Expenses(Base):
             if not matched_transaction and expense['matched_corporate_card_transaction_ids']:
                 matched_transaction = self.get_transaction_by_id(expense['matched_corporate_card_transaction_ids'][0])
                 if matched_transaction:
+                    logger.info(f"Matched transaction for expense {expense['id']}: {matched_transaction}")
                     matched_transaction = matched_transaction[0]
             posted_at = matched_transaction['posted_at'] if matched_transaction and 'posted_at' in matched_transaction else None
             if self.attribute_is_valid(expense):
