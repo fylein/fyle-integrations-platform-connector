@@ -1,9 +1,13 @@
 from typing import List, Dict
 from datetime import datetime
-
+import logging
 from dateutil import parser
 
 from .base import Base
+
+
+logger = logging.getLogger(__name__)
+logger.level = logging.INFO
 
 
 class Expenses(Base):
@@ -154,6 +158,11 @@ class Expenses(Base):
                 custom_properties[custom_field['name']] = custom_field['value']
             
             matched_transaction = expense['matched_corporate_card_transactions'][0] if expense['matched_corporate_card_transactions'] else None
+            if not matched_transaction and expense['matched_corporate_card_transaction_ids']:
+                matched_transaction = self.get_transaction_by_id(expense['matched_corporate_card_transaction_ids'][0])
+                if matched_transaction:
+                    logger.info(f"Matched transaction for expense {expense['id']}: {matched_transaction}")
+                    matched_transaction = matched_transaction[0]
             posted_at = matched_transaction['posted_at'] if matched_transaction and 'posted_at' in matched_transaction else None
             if self.attribute_is_valid(expense):
                 objects.append({
@@ -235,3 +244,9 @@ class Expenses(Base):
         """
         self.set_workspace_id(workspace_id=workspace_id)
         return self.__construct_expenses_objects(data)
+
+    def get_transaction_by_id(self, transaction_id: int):
+        """
+        Get a transaction by ID
+        """
+        return self.corporate_card_transactions.get_transaction_by_id(transaction_id)
