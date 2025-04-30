@@ -164,6 +164,18 @@ class Expenses(Base):
                     logger.info(f"Matched transaction for expense {expense['id']}: {matched_transaction}")
                     matched_transaction = matched_transaction[0]
             posted_at = matched_transaction['posted_at'] if matched_transaction and 'posted_at' in matched_transaction else None
+            corporate_card_id = None
+            masked_corporate_card_number = None
+            
+            if matched_transaction:
+                corporate_card_id = matched_transaction.get('corporate_card_id')
+                if 'corporate_card' in matched_transaction and matched_transaction['corporate_card']:
+                    masked_corporate_card_number = matched_transaction['corporate_card'].get('masked_number')
+            elif expense['matched_corporate_card_transactions']:
+                first_matched_transaction = expense['matched_corporate_card_transactions'][0]
+                corporate_card_id = first_matched_transaction.get('corporate_card_id')
+                masked_corporate_card_number = first_matched_transaction.get('masked_corporate_card_number')
+
             if self.attribute_is_valid(expense):
                 objects.append({
                     'id': expense['id'],
@@ -188,10 +200,8 @@ class Expenses(Base):
                     'state': expense['state'],
                     'vendor': expense['merchant'],
                     'cost_center': expense['cost_center']['name'] if expense['cost_center'] else None,
-                    'corporate_card_id': matched_transaction['corporate_card_id'] if matched_transaction else expense['matched_corporate_card_transactions'][0]['corporate_card_id'] \
-                        if expense['matched_corporate_card_transactions'] else None,
-                    'masked_corporate_card_number': matched_transaction['corporate_card']['masked_number'] if matched_transaction else expense['matched_corporate_card_transactions'][0].get('masked_corporate_card_number') \
-                        if expense['matched_corporate_card_transactions'] else None,
+                    'corporate_card_id': corporate_card_id,
+                    'masked_corporate_card_number': masked_corporate_card_number,
                     'bank_transaction_id': matched_transaction['id'] if matched_transaction else None,
                     'purpose': expense['purpose'],
                     'report_id': expense['report_id'],
