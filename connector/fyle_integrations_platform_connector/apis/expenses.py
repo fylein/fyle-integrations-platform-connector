@@ -157,24 +157,24 @@ class Expenses(Base):
             for custom_field in expense['custom_fields']:
                 custom_properties[custom_field['name']] = custom_field['value']
             
+
+            corporate_card_id = None
+            masked_corporate_card_number = None
+            
             matched_transaction = expense['matched_corporate_card_transactions'][0] if expense['matched_corporate_card_transactions'] else None
             if not matched_transaction and expense['matched_corporate_card_transaction_ids']:
                 matched_transaction = self.get_transaction_by_id(expense['matched_corporate_card_transaction_ids'][0])
                 if matched_transaction:
                     logger.info(f"Matched transaction for expense {expense['id']}: {matched_transaction}")
                     matched_transaction = matched_transaction[0]
-            posted_at = matched_transaction['posted_at'] if matched_transaction and 'posted_at' in matched_transaction else None
-            corporate_card_id = None
-            masked_corporate_card_number = None
-            
-            if matched_transaction:
-                corporate_card_id = matched_transaction.get('corporate_card_id')
-                if 'corporate_card' in matched_transaction and matched_transaction['corporate_card']:
-                    masked_corporate_card_number = matched_transaction['corporate_card'].get('masked_number')
+                    corporate_card_id = matched_transaction.get('corporate_card_id')
+                    masked_corporate_card_number = matched_transaction['corporate_card']['masked_number']
             elif expense['matched_corporate_card_transactions']:
-                first_matched_transaction = expense['matched_corporate_card_transactions'][0]
-                corporate_card_id = first_matched_transaction.get('corporate_card_id')
-                masked_corporate_card_number = first_matched_transaction.get('masked_corporate_card_number')
+                corporate_card_id = matched_transaction.get('corporate_card_id')
+                masked_corporate_card_number = matched_transaction.get('masked_corporate_card_number')
+
+            posted_at = matched_transaction['posted_at'] if matched_transaction and 'posted_at' in matched_transaction else None
+            
 
             if self.attribute_is_valid(expense):
                 objects.append({
