@@ -188,9 +188,9 @@ class Expenses(Base):
                     'state': expense['state'],
                     'vendor': expense['merchant'],
                     'cost_center': expense['cost_center']['name'] if expense['cost_center'] else None,
-                    'corporate_card_id': expense['matched_corporate_card_transactions'][0]['corporate_card_id'] \
+                    'corporate_card_id': matched_transaction['corporate_card_id'] if matched_transaction else expense['matched_corporate_card_transactions'][0]['corporate_card_id'] \
                         if expense['matched_corporate_card_transactions'] else None,
-                    'masked_corporate_card_number': expense['matched_corporate_card_transactions'][0].get('masked_corporate_card_number') \
+                    'masked_corporate_card_number': matched_transaction['corporate_card']['masked_number'] if matched_transaction else expense['matched_corporate_card_transactions'][0].get('masked_corporate_card_number') \
                         if expense['matched_corporate_card_transactions'] else None,
                     'bank_transaction_id': matched_transaction['id'] if matched_transaction else None,
                     'purpose': expense['purpose'],
