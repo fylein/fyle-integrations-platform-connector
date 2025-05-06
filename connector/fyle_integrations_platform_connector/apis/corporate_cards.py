@@ -35,4 +35,4 @@ class CorporateCards(Base):
                             }
                         })
 
-            self.bulk_create_or_update_expense_attributes(card_attributes, True)
+            self.bulk_create_or_update_expense_attributes(card_attributes, False)
