@@ -57,7 +57,7 @@ class Merchants(Base):
                 'default_value': merchants['default_value'] if merchants['default_value'] else '',
             }
 
-            if merchant_payload['options']:
+            if len(merchant_payload['options']) == 0:
                 logger.error("Merchant Payload is empty for Workspace: %s", self.workspace_id)
                 return
 
