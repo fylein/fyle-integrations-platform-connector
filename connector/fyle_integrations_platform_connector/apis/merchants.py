@@ -1,8 +1,9 @@
+from datetime import datetime, timezone
 import logging
 
 from .base import Base
 from typing import List
-from fyle_accounting_mappings.models import ExpenseAttribute, ExpenseAttributesDeletionCache
+from fyle_accounting_mappings.models import ExpenseAttributesDeletionCache
 
 logger = logging.getLogger(__name__)
 logger.level = logging.INFO
@@ -26,9 +27,11 @@ class Merchants(Base):
         """
         Post data to Fyle
         """
+        logger.info("Merchant Payload received from Integration for Workspace: %s with count: %s", self.workspace_id, len(payload))
         generator = self.get_all_generator()
         for items in generator:
             merchants = items['data'][0]
+            logger.info("Fyle Merchant Count: %s in Workspace: %s", len(merchants['options']), self.workspace_id)
             if delete_merchants:
                 merchants['options'] = list(set(merchants['options']) - set(payload))
             else:
@@ -37,6 +40,9 @@ class Merchants(Base):
                 else:
                     merchants['options'].extend(payload)
                 merchants['options'] = list(set(merchants['options']))
+
+            logger.info("Posting Merchant Payload for Workspace: %s with count: %s", self.workspace_id, len(merchants['options']))
+
             merchant_payload = {
                 'id': merchants['id'],
                 'field_name': merchants['field_name'],
@@ -51,6 +57,10 @@ class Merchants(Base):
                 'default_value': merchants['default_value'] if merchants['default_value'] else '',
             }
 
+            if len(merchant_payload['options']) == 0:
+                logger.error("Merchant Payload is empty for Workspace: %s", self.workspace_id)
+                return
+
         return self.connection.post({'data': merchant_payload})
 
     def sync(self):
@@ -63,8 +73,11 @@ class Merchants(Base):
             for items in generator:
                 merchants = items['data'][0]
 
+                logger.info("Fyle Merchant Count: %s in Workspace: %s", len(merchants['options']), self.workspace_id)
+
                 expense_attributes_deletion_cache.merchant_list = merchants['options']
-                expense_attributes_deletion_cache.save()
+                expense_attributes_deletion_cache.updated_at = datetime.now(timezone.utc)
+                expense_attributes_deletion_cache.save(update_fields=['merchant_list', 'updated_at'])
 
                 merchant_attributes = []
 
@@ -84,7 +97,8 @@ class Merchants(Base):
             logger.exception(e)
             expense_attributes_deletion_cache = ExpenseAttributesDeletionCache.objects.get(workspace_id=self.workspace_id)
             expense_attributes_deletion_cache.merchant_ids = []
-            expense_attributes_deletion_cache.save()
+            expense_attributes_deletion_cache.updated_at = datetime.now(timezone.utc)
+            expense_attributes_deletion_cache.save(update_fields=['merchant_ids', 'updated_at'])
 
     def get_count(self):
         """

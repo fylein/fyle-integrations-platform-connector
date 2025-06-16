@@ -1,6 +1,6 @@
 from .base import Base
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from fyle_accounting_mappings.models import ExpenseAttributesDeletionCache
 
 logger = logging.getLogger(__name__)
@@ -38,7 +38,8 @@ class Categories(Base):
                             'detail': None
                         })
 
-                expense_attributes_deletion_cache.save()
+                expense_attributes_deletion_cache.updated_at = datetime.now(timezone.utc)
+                expense_attributes_deletion_cache.save(update_fields=['category_ids', 'updated_at'])
                 self.bulk_create_or_update_expense_attributes(category_attributes, True)
 
             self.bulk_update_deleted_expense_attributes()
@@ -47,4 +48,5 @@ class Categories(Base):
             logger.exception(exception)
             expense_attributes_deletion_cache = ExpenseAttributesDeletionCache.objects.get(workspace_id=self.workspace_id)
             expense_attributes_deletion_cache.category_ids = []
-            expense_attributes_deletion_cache.save()
+            expense_attributes_deletion_cache.updated_at = datetime.now(timezone.utc)
+            expense_attributes_deletion_cache.save(update_fields=['category_ids', 'updated_at'])

@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 import logging
 from fyle_accounting_mappings.models import ExpenseAttributesDeletionCache
 from .base import Base
@@ -44,7 +45,8 @@ class ExpenseCustomFields(Base):
                         self.attribute_type = attribute_type
                         self.bulk_create_or_update_expense_attributes(attributes, True)
             expense_attributes_deletion_cache.custom_field_list = expense_field_list
-            expense_attributes_deletion_cache.save()
+            expense_attributes_deletion_cache.updated_at = datetime.now(timezone.utc)
+            expense_attributes_deletion_cache.save(update_fields=['custom_field_list', 'updated_at'])
 
             self.bulk_update_deleted_expense_attributes()
 
