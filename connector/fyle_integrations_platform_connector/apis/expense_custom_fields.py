@@ -54,7 +54,7 @@ class ExpenseCustomFields(Base):
             logger.exception(e)
             expense_attributes_deletion_cache = ExpenseAttributesDeletionCache.objects.get(workspace_id=self.workspace_id)
             expense_attributes_deletion_cache.custom_field_list = []
-            expense_attributes_deletion_cache.save()
+            expense_attributes_deletion_cache.save(update_fields=['custom_field_list', 'updated_at'])
 
     def list_all(self, query_params=None):
         """
