@@ -96,9 +96,9 @@ class Merchants(Base):
         except Exception as e:
             logger.exception(e)
             expense_attributes_deletion_cache = ExpenseAttributesDeletionCache.objects.get(workspace_id=self.workspace_id)
-            expense_attributes_deletion_cache.merchant_ids = []
+            expense_attributes_deletion_cache.merchant_list = []
             expense_attributes_deletion_cache.updated_at = datetime.now(timezone.utc)
-            expense_attributes_deletion_cache.save(update_fields=['merchant_ids', 'updated_at'])
+            expense_attributes_deletion_cache.save(update_fields=['merchant_list', 'updated_at'])
 
     def get_count(self):
         """
