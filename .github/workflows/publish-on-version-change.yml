@@ -45,8 +45,7 @@ jobs:
         with:
           tag_name: ${{ steps.get_version.outputs.curr_version }}
           name: Release ${{ steps.get_version.outputs.curr_version }}
-          body: |
-            Automated release for version ${{ steps.get_version.outputs.curr_version }}.
+          generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   
