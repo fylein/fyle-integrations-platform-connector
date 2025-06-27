@@ -6,6 +6,7 @@ from fyle_accounting_mappings.models import ExpenseAttributesDeletionCache
 logger = logging.getLogger(__name__)
 logger.level = logging.INFO
 
+
 class Categories(Base):
     """Class for Categories APIs."""
 
