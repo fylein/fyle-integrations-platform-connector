@@ -175,8 +175,8 @@ class Expenses(Base):
 
             posted_at = matched_transaction['posted_at'] if matched_transaction and 'posted_at' in matched_transaction else None
 
-            if expense['tax_group_id'] is not None and expense['amount'] is None:
-                expense['amount'] = 0
+            if expense['tax_group_id'] is not None and expense['tax_amount'] is None:
+                expense['tax_amount'] = 0
 
             if self.attribute_is_valid(expense):
                 objects.append({
