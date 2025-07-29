@@ -174,7 +174,9 @@ class Expenses(Base):
                 masked_corporate_card_number = matched_transaction.get('masked_corporate_card_number')
 
             posted_at = matched_transaction['posted_at'] if matched_transaction and 'posted_at' in matched_transaction else None
-            
+
+            if expense['tax_group_id'] is not None and expense['amount'] is None:
+                expense['amount'] = 0
 
             if self.attribute_is_valid(expense):
                 objects.append({
