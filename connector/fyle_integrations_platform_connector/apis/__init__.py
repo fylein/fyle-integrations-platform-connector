@@ -14,6 +14,7 @@ from .dependent_fields import DependentFields
 from .subscriptions import Subscriptions
 from .reports import Reports
 from .corporate_card_transactions import CorporateCardTransactions
+from .org_settings import OrgSettings
 __all__ = [
     'Expenses',
     'Employees',
@@ -30,5 +31,6 @@ __all__ = [
     'DependentFields',
     'Subscriptions',
     'Reports',
-    'CorporateCardTransactions'
+    'CorporateCardTransactions',
+    'OrgSettings'
 ]
