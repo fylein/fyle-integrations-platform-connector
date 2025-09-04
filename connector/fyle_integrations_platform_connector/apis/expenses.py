@@ -160,7 +160,8 @@ class Expenses(Base):
 
             corporate_card_id = None
             masked_corporate_card_number = None
-            
+            corporate_card_merchant = None
+
             matched_transaction = expense['matched_corporate_card_transactions'][0] if expense['matched_corporate_card_transactions'] else None
             if not matched_transaction and expense['matched_corporate_card_transaction_ids']:
                 matched_transaction = self.get_transaction_by_id(expense['matched_corporate_card_transaction_ids'][0])
@@ -169,9 +170,11 @@ class Expenses(Base):
                     matched_transaction = matched_transaction[0]
                     corporate_card_id = matched_transaction.get('corporate_card_id')
                     masked_corporate_card_number = matched_transaction['corporate_card']['masked_number']
+                    corporate_card_merchant = matched_transaction.get('merchant')
             elif expense['matched_corporate_card_transactions']:
                 corporate_card_id = matched_transaction.get('corporate_card_id')
                 masked_corporate_card_number = matched_transaction.get('masked_corporate_card_number')
+                corporate_card_merchant = matched_transaction.get('merchant')
 
             posted_at = matched_transaction['posted_at'] if matched_transaction and 'posted_at' in matched_transaction else None
 
@@ -206,6 +209,7 @@ class Expenses(Base):
                     'masked_corporate_card_number': masked_corporate_card_number,
                     'bank_transaction_id': matched_transaction['id'] if matched_transaction else None,
                     'split_group_id': expense['split_group_id'],
+                    'corporate_card_merchant': corporate_card_merchant,
                     'purpose': expense['purpose'],
                     'report_id': expense['report_id'],
                     'report_title': expense['report']['title'] if 'report' in expense and expense['report'] and 'title' in expense['report'] else None,
