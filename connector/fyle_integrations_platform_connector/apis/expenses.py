@@ -205,6 +205,7 @@ class Expenses(Base):
                     'corporate_card_id': corporate_card_id,
                     'masked_corporate_card_number': masked_corporate_card_number,
                     'bank_transaction_id': matched_transaction['id'] if matched_transaction else None,
+                    'split_group_id': expense['split_group_id'],
                     'purpose': expense['purpose'],
                     'report_id': expense['report_id'],
                     'report_title': expense['report']['title'] if 'report' in expense and expense['report'] and 'title' in expense['report'] else None,
