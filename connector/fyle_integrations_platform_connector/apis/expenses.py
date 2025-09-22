@@ -14,7 +14,7 @@ class Expenses(Base):
     """Class for Expenses APIs."""
 
     def get(self, source_account_type: List[str], state: str=None, last_synced_at: datetime=None,
-        settled_at: datetime=None, approved_at: datetime=None, filter_credit_expenses: bool=False, last_paid_at=None, report_id: str=None, import_states: List[str] = []) -> List[dict]:
+        settled_at: datetime=None, approved_at: datetime=None, filter_credit_expenses: bool=False, last_paid_at=None, report_id: str=None, expense_id: str=None, import_states: List[str] = []) -> List[dict]:
         """
         Get expenses.
 
@@ -29,7 +29,7 @@ class Expenses(Base):
         """
         all_expenses = []
 
-        query_params = self.__construct_expenses_query_params(source_account_type, state, last_synced_at, settled_at, approved_at, last_paid_at, report_id, import_states)
+        query_params = self.__construct_expenses_query_params(source_account_type, state, last_synced_at, settled_at, approved_at, last_paid_at, report_id, expense_id, import_states)
         generator = self.connection.list_all(query_params)
 
         for expense_list in generator:
@@ -42,7 +42,7 @@ class Expenses(Base):
 
 
     @staticmethod
-    def __construct_expenses_query_params(source_account_type: List[str], state: str, updated_at: datetime, settled_at: datetime, approved_at:datetime, last_paid_at: datetime, report_id: str, import_states: List[str]) -> dict:
+    def __construct_expenses_query_params(source_account_type: List[str], state: str, updated_at: datetime, settled_at: datetime, approved_at:datetime, last_paid_at: datetime, report_id: str, expense_id: str, import_states: List[str]) -> dict:
         """
         Construct expenses query params.
         :param source_account_type: Source account types.
@@ -99,6 +99,9 @@ class Expenses(Base):
 
         if report_id:
             query_params['report_id'] = 'eq.{}'.format(report_id)
+
+        if expense_id:
+            query_params['id'] = 'eq.{}'.format(expense_id)
 
         return query_params
 
