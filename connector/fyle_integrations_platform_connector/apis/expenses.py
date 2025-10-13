@@ -207,14 +207,14 @@ class Expenses(Base):
                     'reimbursable': expense['is_reimbursable'],
                     'billable': expense['is_billable'],
                     'state': expense['state'],
-                    'vendor': __sanitize_string(expense['merchant']),
+                    'vendor': self.__sanitize_string(expense['merchant']),
                     'cost_center': expense['cost_center']['name'] if expense['cost_center'] else None,
                     'corporate_card_id': corporate_card_id,
                     'masked_corporate_card_number': masked_corporate_card_number,
                     'bank_transaction_id': matched_transaction['id'] if matched_transaction else None,
                     'split_group_id': expense['split_group_id'],
                     'corporate_card_merchant': corporate_card_merchant,
-                    'purpose': __sanitize_string(expense['purpose']),
+                    'purpose': self.__sanitize_string(expense['purpose']),
                     'report_id': expense['report_id'],
                     'report_title': expense['report']['title'] if 'report' in expense and expense['report'] and 'title' in expense['report'] else None,
                     'file_ids': expense['file_ids'],
@@ -272,6 +272,7 @@ class Expenses(Base):
         """
         return self.corporate_card_transactions.get_transaction_by_id(transaction_id)
 
+    @staticmethod
     def __sanitize_string(string: str) -> str:
         """
         Sanitize the string from special chars, strip excess spaces and multiple spaces
