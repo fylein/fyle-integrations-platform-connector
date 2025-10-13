@@ -1,7 +1,8 @@
-from typing import List, Dict
-from datetime import datetime
 import logging
 from dateutil import parser
+from datetime import datetime
+from typing import List, Dict
+from unidecode import unidecode
 
 from .base import Base
 
@@ -206,14 +207,14 @@ class Expenses(Base):
                     'reimbursable': expense['is_reimbursable'],
                     'billable': expense['is_billable'],
                     'state': expense['state'],
-                    'vendor': expense['merchant'],
+                    'vendor': __sanitize_string(expense['merchant']),
                     'cost_center': expense['cost_center']['name'] if expense['cost_center'] else None,
                     'corporate_card_id': corporate_card_id,
                     'masked_corporate_card_number': masked_corporate_card_number,
                     'bank_transaction_id': matched_transaction['id'] if matched_transaction else None,
                     'split_group_id': expense['split_group_id'],
                     'corporate_card_merchant': corporate_card_merchant,
-                    'purpose': expense['purpose'],
+                    'purpose': __sanitize_string(expense['purpose']),
                     'report_id': expense['report_id'],
                     'report_title': expense['report']['title'] if 'report' in expense and expense['report'] and 'title' in expense['report'] else None,
                     'file_ids': expense['file_ids'],
@@ -270,3 +271,11 @@ class Expenses(Base):
         Get a transaction by ID
         """
         return self.corporate_card_transactions.get_transaction_by_id(transaction_id)
+
+    def __sanitize_string(string: str) -> str:
+        """
+        Sanitize the string from special chars, strip excess spaces and multiple spaces
+        """
+        if string:
+            decoded_string = unidecode(u'{}'.format(string))
+            return ' '.join(decoded_string.strip().split())
