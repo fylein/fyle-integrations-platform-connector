@@ -37,12 +37,7 @@ def get_resource_timestamp(fyle_sync_timestamp: FyleSyncTimestamp, resource_name
     :param resource_name: Resource name (e.g., 'employees', 'categories', etc.)
     :return: timestamp or None
     """
-    if not fyle_sync_timestamp:
-        return None
-
-    singular_name = pluralize_to_singular(resource_name)
-    field_name = f'{singular_name}_synced_at'
-    return getattr(fyle_sync_timestamp, field_name, None)
+    return getattr(fyle_sync_timestamp, f'{resource_name}_synced_at', None)
 
 
 class PlatformConnector:
@@ -146,7 +141,7 @@ class PlatformConnector:
         if import_taxes:
             apis.append('tax_groups')
 
-        feature_config = FeatureConfig.objects.get(workspace_id=self.workspace_id)
+        feature_config = FeatureConfig.get_cached_response(workspace_id=self.workspace_id)
         if feature_config.fyle_webhook_sync_enabled:
             fyle_sync_timestamp = FyleSyncTimestamp.objects.get(workspace_id=self.workspace_id)
 
@@ -157,12 +152,15 @@ class PlatformConnector:
                     dimension.sync(skip_dependent_field_ids)
                 else:
                     sync_after = None
+                    resource_name = pluralize_to_singular(api)
                     if feature_config.fyle_webhook_sync_enabled and fyle_sync_timestamp:
-                        sync_after = get_resource_timestamp(fyle_sync_timestamp, api)
+                        sync_after = get_resource_timestamp(fyle_sync_timestamp, resource_name)
+                        logger.debug(f'Syncing {api} with webhook mode | sync_after: {sync_after}')
+                    else:
+                        logger.debug(f'Syncing {api} with full sync mode')
                     dimension.sync(sync_after=sync_after)
 
-                    if feature_config.fyle_webhook_sync_enabled:
-                        resource_type = pluralize_to_singular(api)
-                        fyle_sync_timestamp.update_sync_timestamp(self.workspace_id, resource_type)
+                    if feature_config.fyle_webhook_sync_enabled and fyle_sync_timestamp:
+                        fyle_sync_timestamp.update_sync_timestamp(self.workspace_id, resource_name)
             except Exception as e:
-                logger.exception(e)
+                logger.exception(f'Error syncing {api} for workspace_id {self.workspace_id}: {e}')

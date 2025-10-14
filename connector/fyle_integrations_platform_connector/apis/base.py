@@ -42,26 +42,22 @@ class Base:
     def construct_query_params(self, sync_after: datetime = None) -> dict:
         """
         Constructs the query params for the API call.
+        :param sync_after: Sync after timestamp for incremental sync (webhook mode)
         :return: dict
         """
-        if self.attribute_type in ['CATEGORY', 'PROJECT', 'COST_CENTER']:
-            params = {'order': 'updated_at.desc'}
-            params.update(self.query_params)
-            return params
-
-        if sync_after:
-            updated_at = self.format_date(sync_after)
-        else:
-            last_synced_record = self.__get_last_synced_at()
-            updated_at = self.format_date(last_synced_record.updated_at) if last_synced_record else None
-
         params = {'order': 'updated_at.desc'}
         params.update(self.query_params)
 
         if sync_after:
+            updated_at = self.format_date(sync_after)
             params['updated_at'] = updated_at
-        elif updated_at and self.attribute_type not in ('CATEGORY', 'EMPLOYEE', 'CORPORATE_CARD', 'MERCHANT'):
-            params['updated_at'] = updated_at
+            return params
+
+        if self.attribute_type not in ('CATEGORY', 'PROJECT', 'COST_CENTER', 'EMPLOYEE', 'CORPORATE_CARD', 'MERCHANT'):
+            last_synced_record = self.__get_last_synced_at()
+            if last_synced_record:
+                updated_at = self.format_date(last_synced_record.updated_at)
+                params['updated_at'] = updated_at
 
         return params
 

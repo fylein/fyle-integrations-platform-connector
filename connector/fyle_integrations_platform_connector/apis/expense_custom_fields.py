@@ -17,6 +17,12 @@ class ExpenseCustomFields(Base):
         """
         try:
             query_params = {'order': 'updated_at.desc', 'is_custom': 'eq.true', 'type': 'eq.SELECT', 'is_enabled': 'eq.true'}
+            
+            # Add sync_after filter for incremental sync (webhook mode)
+            if sync_after:
+                updated_at = self.format_date(sync_after)
+                query_params['updated_at'] = updated_at
+            
             generator = self.connection.list_all(query_params)
             expense_attributes_deletion_cache, _ = ExpenseAttributesDeletionCache.objects.get_or_create(workspace_id=self.workspace_id)
             expense_field_list = []
