@@ -148,7 +148,7 @@ class PlatformConnector:
 
         feature_config = FeatureConfig.objects.get(workspace_id=self.workspace_id)
         if feature_config.fyle_webhook_sync_enabled:
-            fyle_sync_timestamp, _ = FyleSyncTimestamp.objects.get(workspace_id=self.workspace_id)
+            fyle_sync_timestamp = FyleSyncTimestamp.objects.get(workspace_id=self.workspace_id)
 
         for api in apis:
             dimension = getattr(self, api)
