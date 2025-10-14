@@ -2,7 +2,7 @@ import logging
 from dateutil import parser
 from datetime import datetime
 from typing import List, Dict
-from unidecode import unidecode
+from text_unidecode import unidecode
 
 from .base import Base
 
