@@ -144,6 +144,7 @@ class Base:
     def sync(self, sync_after: datetime = None) -> None:
         """
         Syncs the latest API data to DB.
+        :param sync_after: Sync after timestamp for incremental sync
         """
         generator = self.get_all_generator(sync_after)
         attributes = self.__construct_expense_attribute_objects(generator)

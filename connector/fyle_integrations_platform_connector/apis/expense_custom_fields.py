@@ -10,9 +10,10 @@ logger.level = logging.INFO
 class ExpenseCustomFields(Base):
     """Class for Expense Custom Fields APIs."""
 
-    def sync(self):
+    def sync(self, sync_after: datetime = None):
         """
         Syncs the latest API data to DB.
+        :param sync_after: Sync after timestamp for incremental sync
         """
         try:
             query_params = {'order': 'updated_at.desc', 'is_custom': 'eq.true', 'type': 'eq.SELECT', 'is_enabled': 'eq.true'}

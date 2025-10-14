@@ -1,15 +1,48 @@
 import logging
 import os
+from datetime import datetime
 
 from fyle.platform import Platform
 from fyle.platform.exceptions import InvalidTokenError
 
-from apps.workspaces.models import FyleCredential
+from apps.workspaces.models import FyleCredential, FeatureConfig
+from fyle_accounting_mappings.models import FyleSyncTimestamp
 from .apis import Expenses, Employees, Categories, Projects, CostCenters, ExpenseCustomFields, CorporateCards, \
     Reimbursements, TaxGroups, Merchants, Files, DependentFields, Departments, Subscriptions, Reports, CorporateCardTransactions, OrgSettings
 
 logger = logging.getLogger(__name__)
 logger.level = logging.INFO
+
+
+def pluralize_to_singular(resource_name: str) -> str:
+    """
+    Convert plural resource name to singular for timestamp field
+    :param resource_name: Plural resource name (e.g., 'employees', 'categories')
+    :return: Singular resource name (e.g., 'employee', 'category')
+    """
+    if resource_name == 'expense_custom_fields':
+        return 'expense_field'
+    
+    if resource_name.endswith('ies'):
+        return resource_name[:-3] + 'y'
+    elif resource_name.endswith('s'):
+        return resource_name[:-1]
+    return resource_name
+
+
+def get_resource_timestamp(fyle_sync_timestamp: FyleSyncTimestamp, resource_name: str) -> datetime:
+    """
+    Get timestamp for a particular resource from FyleSyncTimestamp
+    :param fyle_sync_timestamp: FyleSyncTimestamp object
+    :param resource_name: Resource name (e.g., 'employees', 'categories', etc.)
+    :return: timestamp or None
+    """
+    if not fyle_sync_timestamp:
+        return None
+
+    singular_name = pluralize_to_singular(resource_name)
+    field_name = f'{singular_name}_synced_at'
+    return getattr(fyle_sync_timestamp, field_name, None)
 
 
 class PlatformConnector:
@@ -102,6 +135,7 @@ class PlatformConnector:
     def import_fyle_dimensions(self, import_taxes: bool = False, import_dependent_fields: bool = False, is_export: bool = False, skip_dependent_field_ids: list = []):
         """Import Fyle Platform dimension."""
         apis = ['employees', 'categories', 'projects', 'cost_centers', 'expense_custom_fields', 'corporate_cards']
+        fyle_sync_timestamp = None
 
         if is_export:
             apis = ['employees', 'cost_centers', 'expense_custom_fields', 'corporate_cards']
@@ -112,12 +146,23 @@ class PlatformConnector:
         if import_taxes:
             apis.append('tax_groups')
 
+        feature_config = FeatureConfig.objects.get(workspace_id=self.workspace_id)
+        if feature_config.fyle_webhook_sync_enabled:
+            fyle_sync_timestamp, _ = FyleSyncTimestamp.objects.get(workspace_id=self.workspace_id)
+
         for api in apis:
             dimension = getattr(self, api)
             try:
                 if api == 'dependent_fields':
                     dimension.sync(skip_dependent_field_ids)
                 else:
-                    dimension.sync()
+                    sync_after = None
+                    if feature_config.fyle_webhook_sync_enabled and fyle_sync_timestamp:
+                        sync_after = get_resource_timestamp(fyle_sync_timestamp, api)
+                    dimension.sync(sync_after=sync_after)
+
+                    if feature_config.fyle_webhook_sync_enabled:
+                        resource_type = pluralize_to_singular(api)
+                        fyle_sync_timestamp.update_sync_timestamp(self.workspace_id, resource_type)
             except Exception as e:
                 logger.exception(e)
