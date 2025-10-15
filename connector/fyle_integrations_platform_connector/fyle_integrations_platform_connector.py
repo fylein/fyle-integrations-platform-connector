@@ -14,20 +14,16 @@ logger = logging.getLogger(__name__)
 logger.level = logging.INFO
 
 
-def pluralize_to_singular(resource_name: str) -> str:
-    """
-    Convert plural resource name to singular for timestamp field
-    :param resource_name: Plural resource name (e.g., 'employees', 'categories')
-    :return: Singular resource name (e.g., 'employee', 'category')
-    """
-    if resource_name == 'expense_custom_fields':
-        return 'expense_field'
-    
-    if resource_name.endswith('ies'):
-        return resource_name[:-3] + 'y'
-    elif resource_name.endswith('s'):
-        return resource_name[:-1]
-    return resource_name
+RESOURCE_NAME_MAP = {
+    'employees': 'employee',
+    'categories': 'category',
+    'projects': 'project',
+    'cost_centers': 'cost_center',
+    'expense_custom_fields': 'expense_field',
+    'corporate_cards': 'corporate_card',
+    'dependent_fields': 'dependent_field',
+    'tax_groups': 'tax_group',
+}
 
 
 def get_resource_timestamp(fyle_sync_timestamp: FyleSyncTimestamp, resource_name: str) -> datetime:
@@ -152,12 +148,12 @@ class PlatformConnector:
                     dimension.sync(skip_dependent_field_ids)
                 else:
                     sync_after = None
-                    resource_name = pluralize_to_singular(api)
+                    resource_name = RESOURCE_NAME_MAP.get(api, api)
                     if feature_config.fyle_webhook_sync_enabled and fyle_sync_timestamp:
                         sync_after = get_resource_timestamp(fyle_sync_timestamp, resource_name)
-                        logger.debug(f'Syncing {api} with webhook mode | sync_after: {sync_after}')
+                        logger.debug(f'Syncing {api} for workspace_id {self.workspace_id} with webhook mode | sync_after: {sync_after}')
                     else:
-                        logger.debug(f'Syncing {api} with full sync mode')
+                        logger.debug(f'Syncing {api} for workspace_id {self.workspace_id} with full sync mode')
                     dimension.sync(sync_after=sync_after)
 
                     if feature_config.fyle_webhook_sync_enabled and fyle_sync_timestamp:
