@@ -1,15 +1,39 @@
 import logging
 import os
+from datetime import datetime
 
 from fyle.platform import Platform
 from fyle.platform.exceptions import InvalidTokenError
 
-from apps.workspaces.models import FyleCredential
+from apps.workspaces.models import FyleCredential, FeatureConfig
+from fyle_accounting_mappings.models import FyleSyncTimestamp
 from .apis import Expenses, Employees, Categories, Projects, CostCenters, ExpenseCustomFields, CorporateCards, \
     Reimbursements, TaxGroups, Merchants, Files, DependentFields, Departments, Subscriptions, Reports, CorporateCardTransactions, OrgSettings
 
 logger = logging.getLogger(__name__)
 logger.level = logging.INFO
+
+
+RESOURCE_NAME_MAP = {
+    'employees': 'employee',
+    'categories': 'category',
+    'projects': 'project',
+    'cost_centers': 'cost_center',
+    'expense_custom_fields': 'expense_field',
+    'corporate_cards': 'corporate_card',
+    'dependent_fields': 'dependent_field',
+    'tax_groups': 'tax_group',
+}
+
+
+def get_resource_timestamp(fyle_sync_timestamp: FyleSyncTimestamp, resource_name: str) -> datetime:
+    """
+    Get timestamp for a particular resource from FyleSyncTimestamp
+    :param fyle_sync_timestamp: FyleSyncTimestamp object
+    :param resource_name: Resource name (e.g., 'employees', 'categories', etc.)
+    :return: timestamp or None
+    """
+    return getattr(fyle_sync_timestamp, f'{resource_name}_synced_at', None)
 
 
 class PlatformConnector:
@@ -102,6 +126,7 @@ class PlatformConnector:
     def import_fyle_dimensions(self, import_taxes: bool = False, import_dependent_fields: bool = False, is_export: bool = False, skip_dependent_field_ids: list = []):
         """Import Fyle Platform dimension."""
         apis = ['employees', 'categories', 'projects', 'cost_centers', 'expense_custom_fields', 'corporate_cards']
+        fyle_sync_timestamp = None
 
         if is_export:
             apis = ['employees', 'cost_centers', 'expense_custom_fields', 'corporate_cards']
@@ -112,12 +137,26 @@ class PlatformConnector:
         if import_taxes:
             apis.append('tax_groups')
 
+        feature_config = FeatureConfig.get_cached_response(workspace_id=self.workspace_id)
+        if feature_config.fyle_webhook_sync_enabled:
+            fyle_sync_timestamp = FyleSyncTimestamp.objects.get(workspace_id=self.workspace_id)
+
         for api in apis:
             dimension = getattr(self, api)
             try:
                 if api == 'dependent_fields':
                     dimension.sync(skip_dependent_field_ids)
                 else:
-                    dimension.sync()
+                    sync_after = None
+                    resource_name = RESOURCE_NAME_MAP.get(api, api)
+                    if feature_config.fyle_webhook_sync_enabled and fyle_sync_timestamp:
+                        sync_after = get_resource_timestamp(fyle_sync_timestamp, resource_name)
+                        logger.debug(f'Syncing {api} for workspace_id {self.workspace_id} with webhook mode | sync_after: {sync_after}')
+                    else:
+                        logger.debug(f'Syncing {api} for workspace_id {self.workspace_id} with full sync mode')
+                    dimension.sync(sync_after=sync_after)
+
+                    if feature_config.fyle_webhook_sync_enabled and fyle_sync_timestamp:
+                        fyle_sync_timestamp.update_sync_timestamp(self.workspace_id, resource_name)
             except Exception as e:
-                logger.exception(e)
+                logger.exception(f'Error syncing {api} for workspace_id {self.workspace_id}: {e}')
