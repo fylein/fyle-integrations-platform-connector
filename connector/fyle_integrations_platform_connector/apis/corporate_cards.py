@@ -1,3 +1,4 @@
+from datetime import datetime
 from .base import Base
 
 
@@ -7,11 +8,12 @@ class CorporateCards(Base):
     def __init__(self):
         Base.__init__(self, attribute_type='CORPORATE_CARD')
 
-    def sync(self):
+    def sync(self, sync_after: datetime = None):
         """
         Syncs the latest API data to DB.
+        :param sync_after: Sync after timestamp for incremental sync
         """
-        generator = self.get_all_generator()
+        generator = self.get_all_generator(sync_after)
         for items in generator:
             card_attributes = []
             unique_card_numbers = []
