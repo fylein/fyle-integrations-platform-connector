@@ -137,8 +137,8 @@ class PlatformConnector:
         if import_taxes:
             apis.append('tax_groups')
 
-        feature_config = FeatureConfig.get_cached_response(workspace_id=self.workspace_id)
-        if feature_config.fyle_webhook_sync_enabled:
+        fyle_webhook_sync_enabled = FeatureConfig.get_feature_config(workspace_id=self.workspace_id, key='fyle_webhook_sync_enabled')
+        if fyle_webhook_sync_enabled:
             fyle_sync_timestamp = FyleSyncTimestamp.objects.get(workspace_id=self.workspace_id)
 
         for api in apis:
@@ -149,14 +149,14 @@ class PlatformConnector:
                 else:
                     sync_after = None
                     resource_name = RESOURCE_NAME_MAP.get(api, api)
-                    if feature_config.fyle_webhook_sync_enabled and fyle_sync_timestamp:
+                    if fyle_webhook_sync_enabled and fyle_sync_timestamp:
                         sync_after = get_resource_timestamp(fyle_sync_timestamp, resource_name)
                         logger.debug(f'Syncing {api} for workspace_id {self.workspace_id} with webhook mode | sync_after: {sync_after}')
                     else:
                         logger.debug(f'Syncing {api} for workspace_id {self.workspace_id} with full sync mode')
                     dimension.sync(sync_after=sync_after)
 
-                    if feature_config.fyle_webhook_sync_enabled and fyle_sync_timestamp:
+                    if fyle_webhook_sync_enabled and fyle_sync_timestamp:
                         fyle_sync_timestamp.update_sync_timestamp(self.workspace_id, resource_name)
             except Exception as e:
                 logger.exception(f'Error syncing {api} for workspace_id {self.workspace_id}: {e}')
