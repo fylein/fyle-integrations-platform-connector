@@ -19,13 +19,20 @@ class CostCenters(Base):
         :param sync_after: Sync after timestamp for incremental sync
         """
         try:
-            expense_attributes_deletion_cache, _ = ExpenseAttributesDeletionCache.objects.get_or_create(workspace_id=self.workspace_id)
+            expense_attributes_deletion_cache = None
+            if sync_after is None:
+                expense_attributes_deletion_cache, _ = ExpenseAttributesDeletionCache.objects.get_or_create(workspace_id=self.workspace_id)
+
             generator = self.get_all_generator(sync_after)
 
             for items in generator:
                 cost_center_attributes = []
+                if sync_after is None:
+                    expense_attributes_deletion_cache = ExpenseAttributesDeletionCache.objects.get(workspace_id=self.workspace_id)
+
                 for cost_center in items['data']:
-                    expense_attributes_deletion_cache.cost_center_ids.append(cost_center['id'])
+                    if sync_after is None:
+                        expense_attributes_deletion_cache.cost_center_ids.append(cost_center['id'])
 
                     if self.attribute_is_valid(cost_center):
                         cost_center_attributes.append({
@@ -36,15 +43,19 @@ class CostCenters(Base):
                             'source_id': cost_center['id']
                         })
 
-                expense_attributes_deletion_cache.updated_at = datetime.now(timezone.utc)
-                expense_attributes_deletion_cache.save(update_fields=['cost_center_ids', 'updated_at'])
+                if sync_after is None:
+                    expense_attributes_deletion_cache.updated_at = datetime.now(timezone.utc)
+                    expense_attributes_deletion_cache.save(update_fields=['cost_center_ids', 'updated_at'])
+
                 self.bulk_create_or_update_expense_attributes(cost_center_attributes, True)
 
-            self.bulk_update_deleted_expense_attributes()
+            if sync_after is None:
+                self.bulk_update_deleted_expense_attributes()
 
         except Exception as e:
             logger.exception(e)
-            expense_attributes_deletion_cache = ExpenseAttributesDeletionCache.objects.get(workspace_id=self.workspace_id)
-            expense_attributes_deletion_cache.cost_center_ids = []
-            expense_attributes_deletion_cache.updated_at = datetime.now(timezone.utc)
-            expense_attributes_deletion_cache.save(update_fields=['cost_center_ids', 'updated_at'])
+            if sync_after is None:
+                expense_attributes_deletion_cache = ExpenseAttributesDeletionCache.objects.get(workspace_id=self.workspace_id)
+                expense_attributes_deletion_cache.cost_center_ids = []
+                expense_attributes_deletion_cache.updated_at = datetime.now(timezone.utc)
+                expense_attributes_deletion_cache.save(update_fields=['cost_center_ids', 'updated_at'])
