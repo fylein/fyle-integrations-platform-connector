@@ -56,8 +56,8 @@ class PlatformConnector:
                 refresh_token=fyle_credentials.refresh_token
             )
             
-        except Exception:
-            logger.info('Invalid refresh token')
+        except Exception as e:
+            logger.error('Invalid Refresh token for workspace_id %s with exception %s', self.workspace_id, str(e))
             raise InvalidTokenError('Invalid refresh token')
 
         self.expenses = Expenses()
