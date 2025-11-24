@@ -1,7 +1,7 @@
 fyle==1.1.1
 fyle_accounting_mappings==1.32.3
 python-dateutil==2.8.1
-psycopg2-binary==2.8.4
+psycopg2-binary>=2.9.0
 text-unidecode==1.3
 pylint>=3.0.0
 pylint-django>=2.6.1
