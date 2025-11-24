@@ -1,6 +1,5 @@
 from datetime import datetime, timezone
 import logging
-from fyle_accounting_mappings.models import ExpenseAttributesDeletionCache
 from .base import Base
 
 logger = logging.getLogger(__name__)
@@ -24,8 +23,6 @@ class ExpenseCustomFields(Base):
                 query_params['updated_at'] = updated_at
             
             generator = self.connection.list_all(query_params)
-            expense_attributes_deletion_cache, _ = ExpenseAttributesDeletionCache.objects.get_or_create(workspace_id=self.workspace_id)
-            expense_field_list = []
 
             for items in generator:
                 for row in items['data']:
@@ -33,7 +30,6 @@ class ExpenseCustomFields(Base):
                         attributes = []
                         count = 1
                         attribute_type = row['field_name'].upper().replace(' ', '_')
-                        expense_field_list.append({'attribute_type': attribute_type, 'value_list': row['options']})
                         for option in row['options']:
                             attributes.append({
                                 'attribute_type': attribute_type,
@@ -51,17 +47,9 @@ class ExpenseCustomFields(Base):
                             count = count + 1
                         self.attribute_type = attribute_type
                         self.bulk_create_or_update_expense_attributes(attributes, True)
-            expense_attributes_deletion_cache.custom_field_list = expense_field_list
-            expense_attributes_deletion_cache.updated_at = datetime.now(timezone.utc)
-            expense_attributes_deletion_cache.save(update_fields=['custom_field_list', 'updated_at'])
-
-            self.bulk_update_deleted_expense_attributes()
 
         except Exception as e:
             logger.exception(e)
-            expense_attributes_deletion_cache = ExpenseAttributesDeletionCache.objects.get(workspace_id=self.workspace_id)
-            expense_attributes_deletion_cache.custom_field_list = []
-            expense_attributes_deletion_cache.save(update_fields=['custom_field_list', 'updated_at'])
 
     def list_all(self, query_params=None):
         """
