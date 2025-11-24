@@ -101,12 +101,6 @@ class Base:
             attributes, self.attribute_type, self.workspace_id, update_existing
         )
 
-    def bulk_update_deleted_expense_attributes(self) -> None:
-        """
-        Bulk updates the deleted expense attributes.
-        """
-        ExpenseAttribute.bulk_update_deleted_expense_attributes(self.attribute_type, self.workspace_id)
-
     def __construct_expense_attribute_objects(self, generator) -> List[dict]:
         """
         Constructs the expense attribute objects.
