@@ -28,7 +28,10 @@ limit-inference-results=100
 
 # List of plugins (as comma separated values of python modules names) to load,
 # usually to register additional checkers.
-load-plugins=
+load-plugins=pylint_django
+
+# Django settings module
+django-settings-module=platform_connector_app.settings
 
 # Pickle collected data for later comparisons.
 persistent=yes
@@ -154,7 +157,8 @@ disable=print-statement,
         too-many-arguments,
         too-many-locals,
         too-few-public-methods,
-        super-with-arguments
+        super-with-arguments,
+        django-not-configured
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option

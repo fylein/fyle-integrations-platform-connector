@@ -14,4 +14,4 @@ jobs:
     - name: Python Pylin GitHub Action
       uses: fylein/python-pylint-github-action@v7
       with:
-        args: pip3 install -r requirements.txt && pylint --load-plugins pylint_django --rcfile=.pylintrc **/**.py
+        args: pip3 install -r requirements.txt && pylint --rcfile=.pylintrc **/**.py
