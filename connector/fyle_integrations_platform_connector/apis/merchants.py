@@ -3,7 +3,6 @@ import logging
 
 from .base import Base
 from typing import List
-from fyle_accounting_mappings.models import ExpenseAttributesDeletionCache
 
 logger = logging.getLogger(__name__)
 logger.level = logging.INFO
@@ -68,16 +67,11 @@ class Merchants(Base):
         Syncs the latest API data to DB.
         """
         try:
-            expense_attributes_deletion_cache, _ = ExpenseAttributesDeletionCache.objects.get_or_create(workspace_id=self.workspace_id)
             generator = self.get_all_generator()
             for items in generator:
                 merchants = items['data'][0]
 
                 logger.info("Fyle Merchant Count: %s in Workspace: %s", len(merchants['options']), self.workspace_id)
-
-                expense_attributes_deletion_cache.merchant_list = merchants['options']
-                expense_attributes_deletion_cache.updated_at = datetime.now(timezone.utc)
-                expense_attributes_deletion_cache.save(update_fields=['merchant_list', 'updated_at'])
 
                 merchant_attributes = []
 
@@ -91,14 +85,9 @@ class Merchants(Base):
                     })
 
                 self.bulk_create_or_update_expense_attributes(merchant_attributes, True)
-            self.bulk_update_deleted_expense_attributes()
 
         except Exception as e:
             logger.exception(e)
-            expense_attributes_deletion_cache = ExpenseAttributesDeletionCache.objects.get(workspace_id=self.workspace_id)
-            expense_attributes_deletion_cache.merchant_list = []
-            expense_attributes_deletion_cache.updated_at = datetime.now(timezone.utc)
-            expense_attributes_deletion_cache.save(update_fields=['merchant_list', 'updated_at'])
 
     def get_count(self):
         """
