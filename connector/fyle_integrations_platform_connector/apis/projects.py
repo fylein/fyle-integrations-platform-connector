@@ -1,5 +1,5 @@
 from .base import Base
-from datetime import datetime, timezone
+from datetime import datetime
 import logging
 
 logger = logging.getLogger(__name__)
@@ -33,7 +33,10 @@ class Projects(Base):
                             'display_name': self.attribute_type.replace('_', ' ').title(),
                             'value': project['name'],
                             'active': project['is_enabled'],
-                            'source_id': project['id']
+                            'source_id': project['id'],
+                            'detail': {
+                                'default_billable': project['default_billable']
+                            }
                         })
 
                 self.bulk_create_or_update_expense_attributes(project_attributes, True)
