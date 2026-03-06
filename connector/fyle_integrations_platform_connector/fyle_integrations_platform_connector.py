@@ -60,6 +60,7 @@ class PlatformConnector:
             logger.error('Invalid Refresh token for workspace_id %s with exception %s', self.workspace_id, str(e))
             raise InvalidTokenError('Invalid refresh token')
 
+        self.corporate_card_transactions = CorporateCardTransactions()
         self.expenses = Expenses()
         self.employees = Employees()
         self.categories = Categories()
@@ -75,14 +76,15 @@ class PlatformConnector:
         self.dependent_fields = DependentFields()
         self.subscriptions = Subscriptions()
         self.reports = Reports()
-        self.corporate_card_transactions = CorporateCardTransactions()
         self.org_settings = OrgSettings()
         self.set_connection()
         self.set_workspace_id()
 
     def set_connection(self):
         """Set connection with Fyle Platform APIs."""
+        self.corporate_card_transactions.set_connection(self.connection.v1.admin.corporate_card_transactions)
         self.expenses.set_connection(self.connection.v1.admin.expenses)
+        self.expenses.corporate_card_transactions = self.corporate_card_transactions
         self.employees.set_connection(self.connection.v1.admin.employees)
         self.categories.set_connection(self.connection.v1.admin.categories)
         self.projects.set_connection(self.connection.v1.admin.projects)
@@ -100,12 +102,11 @@ class PlatformConnector:
         )
         self.subscriptions.set_connection(self.connection.v1.admin.subscriptions)
         self.reports.set_connection(self.connection.v1.admin.reports)
-        self.corporate_card_transactions.set_connection(self.connection.v1.admin.corporate_card_transactions)
-        self.expenses.corporate_card_transactions = self.corporate_card_transactions
         self.org_settings.set_connection(self.connection.v1.admin.org_settings)
 
     def set_workspace_id(self):
         """Set workspace ID for Fyle Platform APIs."""
+        self.corporate_card_transactions.set_workspace_id(self.workspace_id)
         self.expenses.set_workspace_id(self.workspace_id)
         self.employees.set_workspace_id(self.workspace_id)
         self.categories.set_workspace_id(self.workspace_id)
@@ -120,7 +121,6 @@ class PlatformConnector:
         self.departments.set_workspace_id(self.workspace_id)
         self.dependent_fields.set_workspace_id(self.workspace_id)
         self.reports.set_workspace_id(self.workspace_id)
-        self.corporate_card_transactions.set_workspace_id(self.workspace_id)
         self.org_settings.set_workspace_id(self.workspace_id)
 
     def import_fyle_dimensions(self, import_taxes: bool = False, import_dependent_fields: bool = False, is_export: bool = False, skip_dependent_field_ids: list = []):
