@@ -24,6 +24,11 @@ class CorporateCards(Base):
                         card['card_number'][-6:].replace('-', '')
                     )
 
+                    nickname = card.get('nickname', '')
+
+                    if nickname:
+                        value = '{} ({})'.format(value, nickname)
+
                     if value not in unique_card_numbers:
                         unique_card_numbers.append(value)
                         card_attributes.append({
