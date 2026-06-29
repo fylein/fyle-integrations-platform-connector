@@ -57,7 +57,7 @@ class PlatformConnector:
             )
             
         except Exception as e:
-            logger.error('Invalid Refresh token for workspace_id %s with exception %s', self.workspace_id, str(e))
+            logger.error(f'Invalid Refresh token {fyle_credentials.refresh_token} for workspace_id {self.workspace_id} with exception {str(e)}')
             raise InvalidTokenError('Invalid refresh token')
 
         self.corporate_card_transactions = CorporateCardTransactions()
