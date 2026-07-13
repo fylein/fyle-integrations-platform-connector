@@ -44,7 +44,9 @@ class Employees(Base):
         Syncs the latest API data to DB.
         :param sync_after: Sync after timestamp for incremental sync
         """
-        generator = self.get_all_generator(sync_after)
+        query_params = self.construct_query_params(sync_after)
+        query_params['has_accepted_invite'] = 'eq.true'
+        generator = self.connection.list_all(query_params)
         for items in generator:
             employee_attributes = []
             for employee in items['data']:
