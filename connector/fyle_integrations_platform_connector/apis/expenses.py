@@ -34,7 +34,7 @@ class Expenses(Base):
         generator = self.connection.list_all(query_params)
 
         for expense_list in generator:
-            expenses = self.__filter_personal_expenses(expense_list)
+            expenses = expense_list['data']
             if filter_credit_expenses:
                 expenses = self.__filter_credit_expenses(expenses)
             all_expenses.extend(expenses)
@@ -105,23 +105,6 @@ class Expenses(Base):
             query_params['id'] = 'eq.{}'.format(expense_id)
 
         return query_params
-
-
-    @staticmethod
-    def __filter_personal_expenses(expense_list: dict) -> List[dict]:
-        """
-        Filter personal expenses.
-        :param expense_list: Expense list.
-        :return: Expense list.
-        """
-        return list(
-            filter(
-                lambda expense: not (
-                    not expense['is_reimbursable'] and expense['source_account']['type'] == 'PERSONAL_CASH_ACCOUNT'
-                ),
-                expense_list['data']
-            )
-        )
 
 
     @staticmethod
