@@ -26,8 +26,8 @@ jobs:
         id: get_version
         run: |
           set -e
-          CURR_VERSION=$(grep "version=" connector/setup.py | head -1 | sed -E "s/.*version=['\"]([^'\"]*)['\"].*/\1/")
-          PREV_VERSION=$(git show HEAD^:connector/setup.py | grep "version=" | head -1 | sed -E "s/.*version=['\"]([^'\"]*)['\"].*/\1/")
+          CURR_VERSION=$(grep "version=" setup.py | head -1 | sed -E "s/.*version=['\"]([^'\"]*)['\"].*/\1/")
+          PREV_VERSION=$(git show HEAD^:setup.py | grep "version=" | head -1 | sed -E "s/.*version=['\"]([^'\"]*)['\"].*/\1/")
           echo "Current version: $CURR_VERSION"
           echo "Previous version: $PREV_VERSION"
           echo "curr_version=$CURR_VERSION" >> $GITHUB_OUTPUT
