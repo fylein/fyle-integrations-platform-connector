@@ -1,11 +1,11 @@
 import setuptools
 
-with open('../README.md', 'r', encoding='utf-8') as f:
+with open('README.md', 'r', encoding='utf-8') as f:
     long_description = f.read()
 
 setuptools.setup(
     name='fyle-integrations-platform-connector',
-    version='4.1.2',
+    version='4.1.3',
     author='Shwetabh Kumar',
     author_email='shwetabh.kumar@fyle.in',
     description='A common platform connector for all the Fyle Integrations to interact with Fyle Platform APIs',
