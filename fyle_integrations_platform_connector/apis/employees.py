@@ -19,6 +19,17 @@ class Employees(Base):
             'order': 'updated_at.desc'
         })['data']
 
+    def get_employee_by_org_user_id(self, org_user_id: str):
+        """
+        Get employee by org user id
+        """
+        return self.connection.list({
+            'id': 'eq.{}'.format(org_user_id),
+            'offset': 0,
+            'limit': 1,
+            'order': 'updated_at.desc'
+        })['data']
+
     def get_admins(self):
         """
         Get admins of the org
