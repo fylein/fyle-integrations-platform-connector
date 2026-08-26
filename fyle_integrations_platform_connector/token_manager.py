@@ -70,6 +70,10 @@ def save_access_token(fyle_credentials: FyleCredential, access_token: str, gener
         logger.info('Fyle access token not saved for workspace_id %s because fyle_credentials model does not have access_token field', fyle_credentials.workspace_id)
         return
 
+    if not fyle_credentials.workspace_id:
+        logger.info('Fyle access token not saved because workspace_id is missing in fyle_credentials model')
+        return
+
     generated_at = generated_at or timezone.now()
     fyle_credentials.access_token = access_token
     fyle_credentials.access_token_expires_at = generated_at + timedelta(
