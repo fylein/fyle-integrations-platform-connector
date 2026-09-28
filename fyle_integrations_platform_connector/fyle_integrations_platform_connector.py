@@ -6,7 +6,7 @@ from datetime import datetime
 from fyle.platform import Platform
 from fyle.platform.exceptions import ExpiredTokenError, InvalidTokenError
 
-from apps.workspaces.models import FyleCredential, FeatureConfig
+from apps.workspaces.models import FyleCredential
 from fyle_accounting_mappings.models import FyleSyncTimestamp
 from .token_manager import get_valid_access_token, save_access_token
 from .apis import Expenses, Employees, Categories, Projects, CostCenters, ExpenseCustomFields, CorporateCards, \
@@ -299,7 +299,6 @@ class PlatformConnector:
     def import_fyle_dimensions(self, import_taxes: bool = False, import_dependent_fields: bool = False, is_export: bool = False, skip_dependent_field_ids: list = []):
         """Import Fyle Platform dimension."""
         apis = ['employees', 'categories', 'projects', 'cost_centers', 'expense_custom_fields', 'corporate_cards']
-        fyle_sync_timestamp = None
 
         if is_export:
             apis = ['employees', 'cost_centers', 'expense_custom_fields', 'corporate_cards']
@@ -310,9 +309,7 @@ class PlatformConnector:
         if import_taxes:
             apis.append('tax_groups')
 
-        fyle_webhook_sync_enabled = FeatureConfig.get_feature_config(workspace_id=self.workspace_id, key='fyle_webhook_sync_enabled')
-        if fyle_webhook_sync_enabled:
-            fyle_sync_timestamp = FyleSyncTimestamp.objects.get(workspace_id=self.workspace_id)
+        fyle_sync_timestamp = FyleSyncTimestamp.objects.get(workspace_id=self.workspace_id)
 
         for api in apis:
             dimension = getattr(self, api)
@@ -322,14 +319,14 @@ class PlatformConnector:
                 else:
                     sync_after = None
                     resource_name = RESOURCE_NAME_MAP.get(api, api)
-                    if fyle_webhook_sync_enabled and fyle_sync_timestamp:
+                    if fyle_sync_timestamp:
                         sync_after = get_resource_timestamp(fyle_sync_timestamp, resource_name)
                         logger.debug(f'Syncing {api} for workspace_id {self.workspace_id} with webhook mode | sync_after: {sync_after}')
                     else:
                         logger.debug(f'Syncing {api} for workspace_id {self.workspace_id} with full sync mode')
                     dimension.sync(sync_after=sync_after)
 
-                    if fyle_webhook_sync_enabled and fyle_sync_timestamp:
+                    if fyle_sync_timestamp:
                         fyle_sync_timestamp.update_sync_timestamp(self.workspace_id, resource_name)
             except Exception as e:
                 logger.exception(f'Error syncing {api} for workspace_id {self.workspace_id}: {e}')
