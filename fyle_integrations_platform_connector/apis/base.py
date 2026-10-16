@@ -147,3 +147,23 @@ class Base:
         :return: Resource Object
         """
         return self.connection.get_by_id(id)['data']
+
+    def delete_bulk(self, data: list):
+        """
+        Deletes multiple resources in bulk.
+        :param data: List of resource IDs to delete
+        """
+        if self.attribute_type not in ('CATEGORY', 'PROJECT', 'COST_CENTER'):
+            self.connection.delete_bulk(data)
+        else:
+            raise NotImplementedError('Bulk delete is not supported for this attribute type.')
+
+    def delete_summary_bulk(self, data: list):
+        """
+        Deletes multiple resource summaries in bulk.
+        :param data: List of resource summary IDs to delete
+        """
+        if self.attribute_type not in ('CATEGORY', 'PROJECT', 'COST_CENTER'):
+            self.connection.delete_summary_bulk(data)
+        else:
+            raise NotImplementedError('Bulk delete is not supported for this attribute type.')
