@@ -53,4 +53,4 @@ class TaxGroups(Base):
 
         if payload:
             for i in range(0, len(payload), batch_size):
-                self.post_bulk(data=payload[i:i + batch_size])
+                self.post_bulk(payload=payload[i:i + batch_size])
