@@ -1,4 +1,5 @@
 from datetime import datetime
+from email import generator
 from .base import Base
 
 class TaxGroups(Base):
@@ -31,3 +32,25 @@ class TaxGroups(Base):
                         })
 
             self.bulk_create_or_update_expense_attributes(tax_attributes, True)
+
+    def disable_all(self, batch_size: int = 200):
+        """
+        Disable all tax groups.
+        """
+        payload = []
+
+        query_params = {'order': 'id.asc', 'is_enabled': 'eq.true'}
+        generator = self.connection.list_all(query_params)
+        for items in generator:
+            for tax_group in items['data']:
+                if self.attribute_is_valid(tax_group):
+                    payload.append({
+                        'name': tax_group['name'],
+                        'id':tax_group['id'],
+                        'is_enabled': False,
+                        'percentage': tax_group['percentage']
+                    })
+
+        if payload:
+            for i in range(0, len(payload), batch_size):
+                self.post_bulk(payload=payload[i:i + batch_size])

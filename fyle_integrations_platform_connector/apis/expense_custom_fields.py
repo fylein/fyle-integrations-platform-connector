@@ -77,3 +77,30 @@ class ExpenseCustomFields(Base):
             count = len(custom_field[0]['options'])
 
         return count
+
+    def disable_all(self, custom_field_ids: list[int]) -> None:
+        """
+        Disable all the custom fields with the given IDs.
+        :param custom_field_ids: List of custom field IDs to disable.
+        """
+        query_params = {
+            'order': 'id.asc',
+            'is_custom': 'eq.true',
+            'is_enabled': 'eq.true',
+            'id': 'in.({})'.format(','.join(map(str, custom_field_ids)))
+        }
+        generator = self.list_all(query_params=query_params)
+
+        for row in generator:
+            if self.attribute_is_valid(row):
+                custom_field_name = row['field_name']
+                custom_field_id = row['id']
+                payload = {
+                    'field_name': custom_field_name,
+                    'type': 'SELECT',
+                    'is_enabled': False,
+                    'is_mandatory': False,
+                    'options': [],
+                    'id': custom_field_id
+                }
+                self.post(payload=payload)
