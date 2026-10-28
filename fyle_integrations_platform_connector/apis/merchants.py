@@ -27,7 +27,6 @@ class Merchants(Base):
         Post data to Fyle
         """
         logger.info("Merchant Payload received from Integration for Workspace: %s with payload %s", self.workspace_id, payload)
-        logger.info("Merchant Payload received from Integration for Workspace: %s with count: %s", self.workspace_id, len(payload))
         generator = self.get_all_generator()
         for items in generator:
             merchants = items['data'][0]
@@ -56,10 +55,6 @@ class Merchants(Base):
                 'code': merchants['code'],
                 'default_value': merchants['default_value'] if merchants['default_value'] else '',
             }
-
-            if len(merchant_payload['options']) == 0:
-                logger.error("Merchant Payload is empty for Workspace: %s", self.workspace_id)
-                return
 
         return self.connection.post({'data': merchant_payload})
 

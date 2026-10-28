@@ -61,12 +61,15 @@ class Base:
 
         return params
 
-    def get_all_generator(self, sync_after: datetime = None):
+    def get_all_generator(self, sync_after: datetime = None, params: dict = {}):
         """
         Returns the generator for retrieving data from the API.
+        :param sync_after: Sync after timestamp for incremental sync (webhook mode)
+        :param params: Additional query parameters to include in the API call.
         :return: Generator
         """
         query_params = self.construct_query_params(sync_after)
+        query_params.update(params)
 
         return self.connection.list_all(query_params)
 
@@ -148,22 +151,76 @@ class Base:
         """
         return self.connection.get_by_id(id)['data']
 
-    def delete_bulk(self, data: list):
+    def delete_bulk(self, payload: dict):
         """
         Deletes multiple resources in bulk.
-        :param data: List of resource IDs to delete
+        :param payload: Payload containing the list of resource IDs to delete
         """
-        if self.attribute_type not in ('CATEGORY', 'PROJECT', 'COST_CENTER'):
-            self.connection.delete_bulk(data)
+        if self.attribute_type in ('CATEGORY', 'PROJECT', 'COST_CENTER'):
+            return self.connection.delete_bulk(data=payload)
         else:
             raise NotImplementedError('Bulk delete is not supported for this attribute type.')
 
-    def delete_summary_bulk(self, data: list):
+    def delete_summary_bulk(self, payload: dict):
         """
         Deletes multiple resource summaries in bulk.
-        :param data: List of resource summary IDs to delete
+        :param payload: Payload containing the list of resource summary IDs to delete
         """
-        if self.attribute_type not in ('CATEGORY', 'PROJECT', 'COST_CENTER'):
-            self.connection.delete_summary_bulk(data)
+        if self.attribute_type in ('CATEGORY', 'PROJECT', 'COST_CENTER'):
+            return self.connection.delete_summary_bulk(data=payload)
         else:
             raise NotImplementedError('Bulk delete is not supported for this attribute type.')
+
+    def delete_or_disable(self, ids: list[int]):
+        """
+        Delete or disable resources by their IDs.
+        :param ids: List of resource IDs to delete or disable.
+        """
+        if self.attribute_type not in ('CATEGORY', 'PROJECT', 'COST_CENTER'):
+            raise NotImplementedError('Delete or disable is not supported for this attribute type.')
+    
+        data = []
+        query_params = {
+            'order': 'id.asc',
+            'is_enabled': 'eq.true',
+            'id': 'in.({})'.format(','.join(map(str, ids)))
+        }
+
+        resource_map = {
+            'CATEGORY': 'categories',
+            'PROJECT': 'projects',
+            'COST_CENTER': 'cost_centers'
+        }
+
+        generator = self.connection.list_all(query_params=query_params)
+
+        for items in generator:
+            for resource in items['data']:
+                if self.attribute_is_valid(resource):
+                    data.append({
+                        'id': resource['id'],
+                        'name': resource['name'],
+                        'is_enabled': False
+                    })
+
+        valid_resource_ids = [resource['id'] for resource in data]
+
+        if not valid_resource_ids:
+            return
+
+        delete_summary_payload = [{'id': resource_id} for resource_id in valid_resource_ids]
+        delete_summary = self.delete_summary_bulk(payload={"data": delete_summary_payload})
+
+        resources_to_delete = delete_summary['data'][resource_map[self.attribute_type]]
+
+        if resources_to_delete:
+            self.delete_bulk(payload={"data": resources_to_delete})
+
+        deleted_resource_ids = [resource['id'] for resource in resources_to_delete]
+        resources_to_disable = []
+        for resource in data:
+            if resource['id'] not in deleted_resource_ids:
+                resources_to_disable.append(resource)
+
+        if resources_to_disable:
+            self.post_bulk(payload=resources_to_disable)
