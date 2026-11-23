@@ -34,7 +34,7 @@ class Categories(Base):
                             'value': category['name'],
                             'source_id': category['id'],
                             'active': category['is_enabled'],
-                            'detail': None
+                            'detail': {'system_category': category.get('system_category')}
                         })
 
                 self.bulk_create_or_update_expense_attributes(category_attributes, True)
